@@ -1,6 +1,15 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from database_setup import Manufacturer, Disc, User, engine
 
 app = Flask(__name__)
+
+
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
+
 
 # Tuple for the statically defined types of disc golf discs we support
 DISCTYPES = ("putter",
@@ -29,7 +38,13 @@ def showUserHome(user_id):
     anyone that is not logged in, or is not this user. If the current
     user matches this ID, then show them their own user dashboard.
     '''
-    return "Display %s user's dashboard if they are logged in, otherwise show their public profile page." % user_id
+    thisUser = session.query(User).filter_by(id=user_id).one()
+    thisUsersDiscs = session.query(Disc).filter_by(user_id=user_id).all()
+    return render_template('user.html',
+                           user_info=thisUser,
+                           discs=thisUsersDiscs)
+
+
 
 
 @app.route('/discs/<int:make_id>/<int:disc_id>')
