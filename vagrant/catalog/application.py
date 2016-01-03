@@ -50,9 +50,18 @@ def showUserHome(user_id):
 
 
 
-@app.route('/discs/<int:make_id>/<int:disc_id>')
-def showDisc(make_id, disc_id):
-    return "This page will show the details of the unique disc with the disc ID of %d" % disc_id
+@app.route('/disc/<int:disc_id>')
+def showDisc(disc_id):
+    ''' Show details about a unique disc on the site. Because any user can
+    submit a description of their unique disc, the unique id from the 'disc'
+    table will be used to pull the first record matching the disc_id from
+    the URL.
+    '''
+    thisDisc = session.query(Disc).filter_by(id=disc_id).first()
+    if thisDisc:
+        return render_template('disc.html', disc=thisDisc)
+    else:
+        return redirect(url_for('showHome'))
 
 
 @app.route('/discs/<disc_type>')
