@@ -84,9 +84,24 @@ def show_discs(disc_type):
 
 @app.route('/maker/<maker_id>')
 def showMaker(maker_id):
-    return "Show details about disc manufacturer with unique ID %s" % maker_id
+    makerInfo = session.query(Manufacturer).filter_by(id=maker_id).one()
+    return render_template("maker.html", maker=makerInfo)
+
+
+@app.route('/maker/<maker>/all')
+def showMakerAll(maker):
+    '''Show Information about this disc manufacturer, and a list of all discs
+    made by this manufacturer.
+    '''
+    manufacturer = session.query(Manufacturer).filter_by(id=maker).one()
+    list_all_by_maker = (session.query(Disc)
+                         .filter_by(manufacturer_id=maker)
+                         .all())
+    return render_template("makerAll.html",
+                           listofAllByMaker=list_all_by_maker,
+                           maker=manufacturer)
 
 
 if __name__ == '__main__':
     app.config.from_pyfile('config.py')
-    app.run(host = "0.0.0.0", port = 5000)
+    app.run(host="0.0.0.0", port=5000)
