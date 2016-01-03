@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+  <div>
+    <h2>Welcome to the main page</h2>
+  </div>
+  <div><a href="{{ url_for('showLogin') }}">Login</a></div>
+  <div id='side-pane'>
+      <ul>
+          <li><a href="{{ url_for('show_discs', disc_type='putter') }}">Putter</a></li>
+          <li><a href="{{ url_for('show_discs', disc_type='midrange') }}">Midrange</a></li>
+          <li><a href="{{ url_for('show_discs', disc_type='fairwaydriver') }}">Fairway Driver</a></li>
+          <li><a href="{{ url_for('show_discs', disc_type='longrangedriver') }}">Long-Range Driver</a></li>
+          <li><a href="{{ url_for('show_discs', disc_type='distancedriver') }}">Max-Distance Driver</a></li>
+      </ul>
+  </div>
+{% endblock %}

@@ -1,20 +1,21 @@
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
 # Tuple for the statically defined types of disc golf discs we support
-disc_types = ("putter",
-              "midrange",
-              "fairway-driver",
-              "long-range-driver",
-              "max-range-driver")
+DISCTYPES = ("putter",
+             "midrange",
+             "fairwaydriver",
+             "longrangedriver",
+             "distancedriver")
+
 
 @app.route('/')
 def showHome():
     '''Main page will provide different experience for the user if they
     are currently logged in or not.
     '''
-    return "The main page will show a list of categories on the left, a welcome and main site description section in the center and a list of the five most recently updated or most viewed discs. There will also be a login icon at the top right which will be replaced with user name/image/account settings once they've logged in."
+    return render_template('main.html')
 
 
 @app.route('/login')
