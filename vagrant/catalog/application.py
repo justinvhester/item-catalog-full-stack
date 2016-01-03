@@ -65,11 +65,21 @@ def showDisc(disc_id):
 
 
 @app.route('/discs/<disc_type>')
-def showDiscs(disc_type):
-    if disc_type in disc_types:
-        return "All discs in the %s category are listed here" % disc_type
+def show_discs(disc_type):
+    '''Show a list of all discs of a certain type. So far only five types of
+    disc are supported. Those five types are stored in the DISCTYPES global
+    variable.
+    '''
+    if disc_type in DISCTYPES:
+        discs_by_type = (session.query(Disc)
+                         .filter_by(disc_type=disc_type)
+                         .all())
+        return render_template("discsbytype.html",
+                               disc_type=disc_type,
+                               discs=discs_by_type)
     else:
-        return "%s is not a type of disc you silly-billy. Choose one of these %s" % (disc_type, disc_types)
+        return ("%s is not a type of disc. Choose"
+                "from this list %s" % (disc_type, DISCTYPES))
 
 
 @app.route('/maker/<maker_id>')

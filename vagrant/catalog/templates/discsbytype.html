@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>{{ disc_type }}</h1>
+
+{% for disc in discs %}
+  <div>
+      <a href="{{ url_for('showDisc', make_id=disc.manufacturer.id, disc_id=disc.id) }}">{{ disc.name }}</a>
+    {{ disc.manufacturer.name }}
+    {{ disc.weight }}
+    {{ disc.color }}
+    {{ disc.condition }}
+  </div>
+{% endfor %}
+
+{% endblock %}
