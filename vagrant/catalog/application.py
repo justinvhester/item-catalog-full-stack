@@ -29,7 +29,10 @@ def showHome():
 
 @app.route('/login')
 def showLogin():
-    return "This login page will offer at least a couple of external OAuth2 providers. Start off with Facebook and G plus."
+    ''' The login view for users to login with their existing Facebook,
+    GooglePlus or github account.
+    '''
+    return render_template('login.html')
 
 
 @app.route('/user/<user_id>')
