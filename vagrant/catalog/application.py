@@ -85,6 +85,24 @@ def showDisc(disc_id):
         return redirect(url_for('showHome'))
 
 
+@app.route('/disc/<int:disc_id>/edit', methods=['GET', 'POST'])
+def edit_disc(disc_id):
+    '''Edit any field of the specified disc'''
+    editDisc = session.query(Disc).filter_by(id=disc_id).one()
+    if request.method == 'POST':
+        editDisc.name = request.form['name']
+        editDisc.description = request.form['description']
+        editDisc.disc_type = request.form['disc_type']
+        editDisc.manufacturer_id = request.form['manufacturer_id']
+        session.add(editDisc)
+        session.commit()
+        return redirect(url_for('showDisc', disc_id=disc_id))
+    else:
+        return render_template('editDisc.html',
+                               disc=editDisc,
+                               disc_id=disc_id)
+
+
 @app.route('/discs/<disc_type>')
 def show_discs(disc_type):
     '''Show a list of all discs of a certain type. So far only five types of
