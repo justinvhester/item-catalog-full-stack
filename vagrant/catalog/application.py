@@ -141,6 +141,14 @@ def showMakerAll(maker):
                            maker=manufacturer)
 
 
+@app.route('/user/<user_id>/add/maker')
+@app.route('/maker/<user_id>/add')
+def add_maker(user_id):
+    '''Form to add a new disc manufacturer. URL includes user_id for
+    record keeping purposes.
+    '''
+    return render_template('addMaker.html', user_id=user_id)
+
 if __name__ == '__main__':
     app.config.from_pyfile('config.py')
     app.run(host="0.0.0.0", port=5000)
