@@ -48,6 +48,27 @@ def showUserHome(user_id):
                            discs=thisUsersDiscs)
 
 
+@app.route('/discs/<user_id>/add', methods=['GET', 'POST'])
+def addDisc(user_id):
+    '''View for adding discs to the database. Intended only for users that
+    are currently logged in. If the request method is a POST, we'll add
+    a disc to the database according to the information submitted through
+    the form. If the request method is not POST, then the 'addDisc' form
+    will be presented to the user.
+    '''
+    if request.method == 'POST':
+        newDisc = Disc(name=request.form['disc_name_form'],
+                       description=request.form['disc_desc_form'],
+                       weight=request.form['disc_weight_form'],
+                       color=request.form['disc_color_form'],
+                       manufacturer_id=request.form['maker_id_form'],
+                       disc_type=request.form['disc_type_form'],
+                       user_id=user_id)
+        session.add(newDisc)
+        session.commit()
+        return redirect(url_for('showUserHome', user_id=user_id))
+    else:
+        return render_template('addDisc.html', user_id=user_id)
 
 
 @app.route('/disc/<int:disc_id>')

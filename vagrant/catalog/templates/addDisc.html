@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<h1> Add New Disc </h1>
+
+<div>
+<form action="{{ url_for('addDisc', user_id=user_id) }}" method="POST">
+<label for="disc_name_form">Name:</label>
+<input type='text' size='30' name='disc_name_form'><br>
+
+Disc Type:<br>
+<input type ='radio' name='disc_type_form' value='putter'>Putter
+<br>
+<input type ='radio' name='disc_type_form' value='midrange'>Mid-Range
+<br>
+<input type ='radio' name='disc_type_form' value='fairwaydriver'>Fairway Driver
+<br>
+<input type ='radio' name='disc_type_form' value='longrangedriver'>Long-Range Driver
+<br>
+<input type ='radio' name='disc_type_form' value='distancedriver'>Distance Driver
+<br>
+
+Description:
+<input type='text' size='80' name='disc_desc_form'><br>
+
+Weight:
+<input type='text' size='30' name='disc_weight_form'><br>
+
+Color:
+<input type='text' size='30' name='disc_color_form'><br>
+
+Manufacturer:
+<input type='text' size='30' name='maker_id_form'><br>
+
+<input type='submit' value='Add New'><br>
+
+</form>
+</div>
+
+<a href="/user/{{ user_id }}">Cancel</a><br>
+{% endblock %}
