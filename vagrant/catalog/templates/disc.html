@@ -3,17 +3,25 @@
 
 <div class="top">
     <ul>
+        Name:
         <li>{{ disc.name }}</li>
+        Description:
         <li>{{ disc.description }}</li>
+        Weight:
         <li>{{ disc.weight }}</li>
+        Color:
         <li>{{ disc.color }}</li>
+        Condition:
         <li>{{ disc.condition }}</li>
+        Manufactured by:
         <li>{{ disc.manufacturer.name }}</li>
+        Added by:
         <li>{{ disc.user.name }}</li>
     </ul>
 </div>
 
-<a href="{{ url_for('showMakerAll', maker=disc.manufacturer.id) }}">SEE ALL DISCS MADE BY {{ disc.manufacturer.name }}</a></br>
-<a href="{{ url_for('show_discs', disc_type=disc.disc_type) }}">SEE ALL DISCS IN THE {{ disc.disc_type }} CATEGORY</a></br>
+<a href="{{ url_for('edit_disc', disc_id=disc.id) }}">EDIT</a><br>
+<a href="{{ url_for('showMakerAll', maker=disc.manufacturer.id) }}">SEE ALL DISCS MADE BY {{ disc.manufacturer.name }}</a><br>
+<a href="{{ url_for('show_discs', disc_type=disc.disc_type) }}">SEE ALL DISCS IN THE {{ disc.disc_type }} CATEGORY</a><br>
 
 {% endblock %}
