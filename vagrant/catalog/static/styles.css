@@ -1,0 +1,41 @@
+/* Handmade artisinal style by jvhester */
+/* I found this color palette by googling 'perfect weather' and */
+/* plopping the best [1] image result [2] into cssdrive [3]. */
+
+/* 1. This best image result really was the first image result for me. */
+/* 2. https://s-media-cache-ak0.pinimg.com/236x/06/21/da/0621daa4221d1db417de0a0b5ada110d.jpg */
+/* 3. http://www.cssdrive.com/imagepalette/index.php */
+
+
+html, body {
+    background: linear-gradient(#29568d, #DCE9F2, #8FA51F);
+    background-attachment: fixed;
+}
+
+h2 {
+    color: #113A6E;
+    text-align: center;
+}
+
+a {
+    color: #2A5D92;
+    text-decoration: none;
+}
+a:visited { color: #113A6E; }
+
+.container {
+    background-color: #F5F8ED;
+    height: 100%;
+}
+
+#welcome {
+    text-align: center;
+}
+#login {
+    position: absolute;
+    left: 95%;
+    top: 8%;
+}
+#home-link {
+    font-size: 22px;
+}

@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
   <div>
-    <h2>Welcome to the main page</h2>
+    <h2 id='welcome'>Welcome to the main page</h2>
   </div>
-  <div><a href="{{ url_for('showLogin') }}">Login</a></div>
+  <div id='login'><a href="{{ url_for('showLogin') }}">Login</a></div>
   <div id='side-pane'>
       <ul>
           <li><a href="{{ url_for('show_discs', disc_type='putter') }}">Putter</a></li>
