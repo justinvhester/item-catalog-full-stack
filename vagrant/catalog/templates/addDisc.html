@@ -29,12 +29,19 @@ Color:
 <input type='text' size='30' name='disc_color_form'><br>
 
 Manufacturer:
-<input type='text' size='30' name='maker_id_form'><br>
+<br>
+{% for maker in makers %}
+  <input type ='radio' name='maker_id_form' value='{{ maker.id }}'>{{ maker.name }}
+  <br>
+{% endfor %}
 
-<input type='submit' value='Add New'><br>
+If the manufacturer is not listed, click <a href="{{url_for('add_maker', user_id=user_id)}}">HERE</a> to add a new one.<br><br>
+
+<input type='submit' value='Add New'>
+<a href="/user/{{ user_id }}">Cancel</a><br>
 
 </form>
 </div>
 
-<a href="/user/{{ user_id }}">Cancel</a><br>
+
 {% endblock %}

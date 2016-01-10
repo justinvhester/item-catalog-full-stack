@@ -68,7 +68,10 @@ def addDisc(user_id):
         session.commit()
         return redirect(url_for('showUserHome', user_id=user_id))
     else:
-        return render_template('addDisc.html', user_id=user_id)
+        list_of_makers = session.query(Manufacturer).all()
+        return render_template('addDisc.html',
+                               user_id=user_id,
+                               makers=list_of_makers)
 
 
 @app.route('/disc/<int:disc_id>')
