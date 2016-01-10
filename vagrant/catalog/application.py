@@ -136,9 +136,8 @@ def showMakerAll(maker):
     made by this manufacturer.
     '''
     manufacturer = session.query(Manufacturer).filter_by(id=maker).one()
-    list_all_by_maker = (session.query(Disc)
-                         .filter_by(manufacturer_id=maker)
-                         .all())
+    list_all_by_maker = session.query(
+        Disc).filter_by(manufacturer_id=maker).all()
     return render_template("makerAll.html",
                            listofAllByMaker=list_all_by_maker,
                            maker=manufacturer)
