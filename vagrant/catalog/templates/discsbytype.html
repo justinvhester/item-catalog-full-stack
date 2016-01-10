@@ -5,7 +5,7 @@
 
 {% for disc in discs %}
   <div>
-      <a href="{{ url_for('showDisc', make_id=disc.manufacturer.id, disc_id=disc.id) }}">{{ disc.name }}</a>
+      <a href="{{ url_for('showDisc', disc_id=disc.id) }}">{{ disc.name }}</a>
     {{ disc.manufacturer.name }}
     {{ disc.weight }}
     {{ disc.color }}
