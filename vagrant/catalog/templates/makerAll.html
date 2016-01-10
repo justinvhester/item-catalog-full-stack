@@ -3,8 +3,10 @@
 
 {% include "maker.html" %}
 
+All {{ maker.name }} discs currently listed on this site.<br>
 {% for disc in listofAllByMaker %}
-  <a href="{{ url_for('showDisc', make_id=disc.manufacturer_id, disc_id=disc.id) }}">{{ disc.name }}</a>
+  <a href="{{ url_for('showDisc', disc_id=disc.id) }}">{{ disc.name }}</a>
+  <br>
 {% endfor %}
 
 {% endblock %}
