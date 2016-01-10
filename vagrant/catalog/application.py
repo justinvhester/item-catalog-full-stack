@@ -35,7 +35,7 @@ def showLogin():
     return render_template('login.html')
 
 
-@app.route('/user/<user_id>')
+@app.route('/user/<user_id>', methods=['GET', 'POST'])
 def showUserHome(user_id):
     '''Using the unique user id number, display this user's profile to
     anyone that is not logged in, or is not this user. If the current
