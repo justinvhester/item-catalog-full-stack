@@ -2,18 +2,17 @@
 {% block content %}
 
 <h3>Add a new Disc Manufacturer</h3>
-<h4>{{ user_id }} is adding a new maker</h4>
+<h4>{{ user.name }} is adding a new maker</h4>
 
 <form action="#" method="POST">
 
     Manufacturer Name:
     <input type='text' size='25' name='manufacturer_name_form'><br>
 
-    Brief Description:
-    <input type='text' size='80' name='manufacturer_description_form'><br>
-
     Manufacturer Country:
     <input type='text' size='2' name='manufacturer_country_form'><br>
+
+    <input type='submit' value='Add New'>
 
 
 </form>

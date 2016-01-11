@@ -144,13 +144,27 @@ def showMakerAll(maker):
                            maker=manufacturer)
 
 
-@app.route('/user/<user_id>/add/maker')
-@app.route('/maker/<user_id>/add')
+@app.route('/user/<user_id>/add/maker', methods=['GET', 'POST'])
+@app.route('/maker/<user_id>/add', methods=['GET', 'POST'])
 def add_maker(user_id):
     '''Form to add a new disc manufacturer. URL includes user_id for
     record keeping purposes.
     '''
-    return render_template('addMaker.html', user_id=user_id)
+    if request.method == 'POST':
+        new_maker = Manufacturer(
+            name=request.form['manufacturer_name_form'],
+            country=request.form['manufacturer_country_form'],
+            user_id=user_id)
+        session.add(new_maker)
+        session.commit()
+        user = session.query(
+            User).filter_by(id=user_id).one()
+        return redirect(url_for('showUserHome', user_id=user_id))
+    else:
+        user = session.query(
+            User).filter_by(id=user_id).one()
+        return render_template('addMaker.html', user=user)
+
 
 if __name__ == '__main__':
     app.config.from_pyfile('config.py')
