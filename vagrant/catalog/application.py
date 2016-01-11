@@ -169,6 +169,18 @@ def add_maker(user_id):
         return render_template('addMaker.html', user=user)
 
 
+@app.route('/maker/<int:maker_id>/edit')
+def edit_manufacturer(maker_id):
+    '''Edit manufacturer information'''
+    return "Edit %s manufacturer ID" % maker_id
+
+
+@app.route('/maker/<int:maker_id>/delete')
+def delete_manufacturer(maker_id):
+    '''Delete manufacturer from website'''
+    return "Delete %s manufacturer ID" % maker_id
+
+
 if __name__ == '__main__':
     app.config.from_pyfile('config.py')
     app.run(host="0.0.0.0", port=5000)
