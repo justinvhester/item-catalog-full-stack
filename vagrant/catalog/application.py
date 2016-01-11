@@ -44,9 +44,12 @@ def showUserHome(user_id):
     '''
     thisUser = session.query(User).filter_by(id=user_id).one()
     thisUsersDiscs = session.query(Disc).filter_by(user_id=user_id).all()
+    thisUsersMakers = session.query(
+        Manufacturer).filter_by(user_id=user_id).all()
     return render_template('user.html',
                            user_info=thisUser,
-                           discs=thisUsersDiscs)
+                           discs=thisUsersDiscs,
+                           makers=thisUsersMakers)
 
 
 @app.route('/discs/<user_id>/add', methods=['GET', 'POST'])
