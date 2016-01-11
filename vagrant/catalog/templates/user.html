@@ -3,10 +3,13 @@
 
 <h2>Welcome {{ user_info.name }}!</h2>
 
+<h4>My disc collection</h4>
 {% for disc in discs %}
 <div><a href="{{ url_for('showDisc', disc_id=disc.id) }}">{{ disc.name }}</a></div>
 {% endfor %}
 
-<p>Click <a href="{{url_for('addDisc', user_id=user_info.id)}}">HERE</a> to add a new disc!</p>
+<p>Click <a href="{{url_for('addDisc', user_id=user_info.id)}}">HERE</a> to add a new disc to your collection.</p>
+
+<h4>Manufacturers I've added to the site</h4>
 
 {% endblock %}
