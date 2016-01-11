@@ -8,6 +8,7 @@
 
 
 html, body {
+    height: 95%;
     background: white;
     background-attachment: fixed;
 }
@@ -22,8 +23,13 @@ a {
     text-decoration: none;
 }
 a:visited { color: #113A6E; }
+.center {
+    text-align: center;
+}
 
 .container {
+    font-family: Helvetica, Arial, sans-serif;
+    height: 95%;
     margin-top: 1.5em;
     margin-right: 1.5em;
     margin-left: 1.5em;
@@ -33,18 +39,26 @@ a:visited { color: #113A6E; }
     border-radius: 20px;
 }
 
-#welcome {
-    text-align: center;
-}
 #login {
     position: absolute;
     left: 85%;
     top: 8%;
-    font-family: Helvetica, Arial, sans-serif;
     font-size: 1.5rem;
     line-height: 1.33;
     letter-spacing: .2em;
 }
 #home-link {
+    margin: 12px;
     font-size: 22px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
+#side-pane {
+    background-image: linear-gradient(#D3EeFf, #DCE9F2);
+    margin: 0.4em;
+    border: 1px solid white;
+    padding: 0.4em;
+    width: 20%;
+    height: 90%;
 }

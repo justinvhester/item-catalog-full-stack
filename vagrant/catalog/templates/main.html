@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
   <div>
-    <h2 id='welcome'>Welcome to the main page</h2>
+    <h2 class='center'>Welcome to the main page</h2>
   </div>
   <div id='login'><a href="{{ url_for('showLogin') }}">Login</a></div>
   <div id='side-pane'>
+      <h4>Categories of Discs</h4>
       <ul>
           <li><a href="{{ url_for('show_discs', disc_type='putter') }}">Putter</a></li>
           <li><a href="{{ url_for('show_discs', disc_type='midrange') }}">Midrange</a></li>
