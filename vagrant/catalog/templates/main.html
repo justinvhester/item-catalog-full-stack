@@ -12,5 +12,10 @@
           <li><a href="{{ url_for('show_discs', disc_type='longrangedriver') }}">Long-Range Driver</a></li>
           <li><a href="{{ url_for('show_discs', disc_type='distancedriver') }}">Max-Distance Driver</a></li>
       </ul>
+      <h4>Manufacturers</h4>
+      <ul>
+          {% for maker in makers %}
+          <a href="#">{{ maker.name }}</a><br>
+          {% endfor %}
   </div>
 {% endblock %}

@@ -24,7 +24,8 @@ def showHome():
     '''Main page will provide different experience for the user if they
     are currently logged in or not.
     '''
-    return render_template('main.html')
+    list_of_makers = session.query(Manufacturer).all()
+    return render_template('main.html', makers=list_of_makers)
 
 
 @app.route('/login')
