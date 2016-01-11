@@ -10,11 +10,11 @@
 
 <p>Click <a href="{{url_for('addDisc', user_id=user_info.id)}}">HERE</a> to add a new disc to your collection.</p>
 
-<h4>Manufacturers I've added to the site</h4>
-<ul>
+<h4>Manufacturers added by {{ user_info.name }}</h4>
 {% for maker in makers %}
-<li><a href="{{ url_for('showMaker', maker_id=maker.id) }}">{{ maker.name }}</a>
+<a href="{{ url_for('showMaker', maker_id=maker.id) }}">{{ maker.name }}</a>
+    <div class='btn-spc'><a href="#" class='btn lnk'>edit</a>
+    <a href="#" class='btn del'>delete</a></div>
 {% endfor %}
-</ul>
 
 {% endblock %}

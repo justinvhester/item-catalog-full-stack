@@ -11,6 +11,7 @@ html, body {
     height: 95%;
     background: white;
     background-attachment: fixed;
+    overflow: auto;
 }
 
 h2 {
@@ -26,6 +27,41 @@ a:visited { color: #113A6E; }
 .center {
     text-align: center;
 }
+.btn-spc {
+    margin-left: 0em;
+    margin-top:0.5em;
+    margin-bottom:0.4em;
+}
+a.btn {
+    padding: 5px 8px;
+    border-radius: 3px;
+    border: solid 1px gray;
+    transition-duration: 0.2s;
+}
+a.lnk{
+    background: green;
+    color: white;
+}
+a.lnk:hover, a.lnk:focus {
+    background: #356094;
+    border: solid 1px #2A4E77;
+    text-decoration: none;
+}
+
+a.del {
+    background: pink;
+    color: red;
+}
+a.del:hover, a.del:focus {
+    background: red;
+    color: white;
+    border: solid 1px #2A4E77;
+    text-decoration: none;
+}
+
+li.no-bullet {
+    list-style-type: none;
+}
 
 .container {
     font-family: Helvetica, Arial, sans-serif;
@@ -33,7 +69,7 @@ a:visited { color: #113A6E; }
     margin-top: 1.5em;
     margin-right: 1.5em;
     margin-left: 1.5em;
-    margin-bottom: 1.5em;
+    padding-bottom: 24px;
     /* background: linear-gradient(#D3EeFf, #DCE9F2, #e9ff72); */
     background-image: linear-gradient(#D3EeFf, #DCE9F2, white);
     border-radius: 20px;
@@ -48,11 +84,10 @@ a:visited { color: #113A6E; }
     letter-spacing: .2em;
 }
 #home-link {
-    margin: 12px;
-    font-size: 22px;
+    font-size: 18px;
     position: fixed;
-    bottom: 0;
-    left: 0;
+    bottom: 2;
+    left: 2;
 }
 #side-pane {
     background-image: linear-gradient(#D3EeFf, #DCE9F2);
