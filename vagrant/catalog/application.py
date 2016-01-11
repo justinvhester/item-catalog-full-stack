@@ -159,7 +159,7 @@ def add_maker(user_id):
         session.commit()
         user = session.query(
             User).filter_by(id=user_id).one()
-        return redirect(url_for('showUserHome', user_id=user_id))
+        return redirect(url_for('addDisc', user_id=user_id))
     else:
         user = session.query(
             User).filter_by(id=user_id).one()
