@@ -169,10 +169,22 @@ def add_maker(user_id):
         return render_template('addMaker.html', user=user)
 
 
-@app.route('/maker/<int:maker_id>/edit')
+@app.route('/maker/<int:maker_id>/edit', methods=['GET', 'POST'])
 def edit_manufacturer(maker_id):
     '''Edit manufacturer information'''
-    return "Edit %s manufacturer ID" % maker_id
+    maker_edit = session.query(
+        Manufacturer).filter_by(id=maker_id).one()
+    print dir(maker_edit)
+    if request.method == 'POST':
+        if request.form['name']:
+            maker_edit.name = request.form['name']
+        if request.form['country']:
+            maker_edit.country = request.form['country']
+        session.add(maker_edit)
+        session.commit()
+        return redirect(url_for('showMaker', maker_id=maker_id))
+    else:
+        return render_template('editManufacturer.html', maker=maker_edit)
 
 
 @app.route('/maker/<int:maker_id>/delete')

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+    <h3>EDIT MANUFACTURER {{ maker.name }}</h3>
+</div>
+<div>
+    <form action="{{ url_for('edit_manufacturer', maker_id=maker.id) }}" method="POST">
+        <input type="text" size="30" name="name" placeholder="{{ maker.name }}">
+        <input type="text" size="30" name="country" placeholder="{{ maker.country }}">
+        <input type="submit" value="Edit">
+    </form>
+</div>
+{% endblock %}
