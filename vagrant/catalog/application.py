@@ -19,6 +19,13 @@ DISCTYPES = ("putter",
              "distancedriver")
 
 
+DISC_TYPE_NAMES = {"putter": "Putter",
+                   "midrange": "Mid-Range",
+                   "fairwaydriver": "Fairway Driver",
+                   "longrangedriver": "Long-Range Driver",
+                   "distancedriver": "Distance Driver"}
+
+
 @app.route('/')
 def showHome():
     '''Main page will provide different experience for the user if they
@@ -97,17 +104,33 @@ def edit_disc(disc_id):
     '''Edit any field of the specified disc'''
     editDisc = session.query(Disc).filter_by(id=disc_id).one()
     if request.method == 'POST':
-        editDisc.name = request.form['name']
-        editDisc.description = request.form['description']
-        editDisc.disc_type = request.form['disc_type']
-        editDisc.manufacturer_id = request.form['manufacturer_id']
+        for field in request.form:
+            print request.form.get(field, "")
+        if request.form['name']:
+            editDisc.name = request.form['name']
+        if request.form['description']:
+            editDisc.description = request.form['description']
+        if request.form['disc_type']:
+            editDisc.disc_type = request.form['disc_type']
+        if request.form['maker_id_form']:
+            editDisc.manufacturer_id = request.form['maker_id_form']
+        if request.form['weight']:
+            editDisc.weight = request.form['weight']
+        if request.form['color']:
+            editDisc.color = request.form['color']
+        if request.form['condition']:
+            editDisc.condition = request.form['condition']
         session.add(editDisc)
         session.commit()
         return redirect(url_for('showDisc', disc_id=disc_id))
     else:
+        list_of_makers = session.query(Manufacturer).all()
         return render_template('editDisc.html',
                                disc=editDisc,
-                               disc_id=disc_id)
+                               disc_id=disc_id,
+                               makers=list_of_makers,
+                               DISCTYPES=DISCTYPES,
+                               DISC_TYPE_NAMES=DISC_TYPE_NAMES)
 
 
 @app.route('/discs/<disc_type>')

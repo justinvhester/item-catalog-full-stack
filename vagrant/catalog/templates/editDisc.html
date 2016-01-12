@@ -9,14 +9,32 @@
       <dd><textarea name = 'description' rows='5' cols='40' placeholder = '{{ disc.description }}'></textarea></dd>
       <dt>Type of Disc:</dt>
       <dd>
-<input type ='radio' name='disc_type' value='putter'>Putter
-<input type ='radio' name='disc_type' value='midrange'>Mid-Range
-<input type ='radio' name='disc_type' value='fairwaydriver'>Fairway Driver
-<input type ='radio' name='disc_type' value='longrangedriver'>Long-Range Driver
-<input type ='radio' name='disc_type' value='distancedriver'>Distance Driver
-</dd>
-      <dt>Manufacturer ID:</dt>
-      <dd><input type ='text' size='30' name='manufacturer_id' placeholder = '{{ disc.manufacturer_id }}'></dd>
+      {% for TYPE in DISCTYPES %}
+        {% if disc.disc_type == TYPE %}
+        <input type='radio' name='disc_type' value='{{ TYPE }}' checked='checked'>{{ DISC_TYPE_NAMES[TYPE] }}
+        {% else %}
+        <input type='radio' name='disc_type' value='{{ TYPE }}'>{{ DISC_TYPE_NAMES[TYPE] }}
+        {% endif %}
+      {% endfor %}
+      </dd>
+      <dt>Weight:</dt>
+       <dd><input type='text' size='30' name='weight' placeholder='{{ disc.weight }}'></dd>
+      <dt>Color:</dt>
+       <dd><input type='text' size='30' name='color' placeholder='{{ disc.color }}'></dd>
+      <dt>Manufacturer:</dt>
+      <dd>
+        {% for maker in makers %}
+            {% if maker.id == disc.manufacturer_id %}
+                <input type='radio' name='maker_id_form' value='{{ maker.id }}' checked='checked'>{{ maker.name }}
+                <br>
+            {% else %}
+                <input type='radio' name='maker_id_form' value='{{ maker.id }}'>{{ maker.name }}
+                <br>
+            {% endif %}
+        {% endfor %}
+      </dd>
+      <dt>Condition:</dt>
+      <dd><input type='text' size='30' name='condition' placeholder='{{ disc.condition }}'></dd>
       </dl>
       <input type='submit' value='Edit'>
      <a href = '{{url_for('showDisc', disc_id=disc_id)}}'> Cancel </a>
