@@ -210,13 +210,17 @@ def edit_manufacturer(maker_id):
         return render_template('editManufacturer.html', maker=maker_edit)
 
 
-@app.route('/maker/<int:maker_id>/delete')
+@app.route('/maker/<int:maker_id>/delete', methods=['GET', 'POST'])
 def delete_manufacturer(maker_id):
     '''Delete manufacturer from website'''
     mnfctr_delete = session.query(Manufacturer).filter_by(id=maker_id).one()
-    session.delete(mnfctr_delete)
-    session.commit()
-    return redirect(url_for('showUserHome', user_id=1))
+    if request.method == 'POST':
+        session.delete(mnfctr_delete)
+        session.commit()
+        return redirect(url_for('showUserHome',
+                                user_id=request.args.get('user_id', '')))
+    else:
+        return render_template('deleteManufacturer.html', maker=mnfctr_delete)
 
 
 if __name__ == '__main__':

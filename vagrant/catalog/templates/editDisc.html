@@ -22,6 +22,7 @@
       <dt>Color:</dt>
        <dd><input type='text' size='30' name='color' placeholder='{{ disc.color }}'></dd>
       <dt>Manufacturer:</dt>
+      <span style="background-color: yellow;">If the manufacturer is not listed, click <a href="{{url_for('add_maker', user_id=disc.user.id)}}">HERE</a> to add a new one.</span>
       <dd>
         {% for maker in makers %}
             {% if maker.id == disc.manufacturer_id %}
