@@ -213,7 +213,10 @@ def edit_manufacturer(maker_id):
 @app.route('/maker/<int:maker_id>/delete')
 def delete_manufacturer(maker_id):
     '''Delete manufacturer from website'''
-    return "Delete %s manufacturer ID" % maker_id
+    mnfctr_delete = session.query(Manufacturer).filter_by(id=maker_id).one()
+    session.delete(mnfctr_delete)
+    session.commit()
+    return redirect(url_for('showUserHome', user_id=1))
 
 
 if __name__ == '__main__':
