@@ -133,6 +133,24 @@ def edit_disc(disc_id):
                                DISC_TYPE_NAMES=DISC_TYPE_NAMES)
 
 
+@app.route('/disc/<int:disc_id>/delete', methods=['GET', 'POST'])
+def delete_disc(disc_id):
+    '''Delete a unique disc from DISCR
+
+    Only the user that added the disc (the owner) is allowed to
+    delete the disc.
+    '''
+    disc_to_delete = session.query(Disc).filter_by(id=disc_id).one()
+    if request.method == 'POST':
+        session.delete(disc_to_delete)
+        session.commit()
+        return redirect(url_for('showUserHome',
+                                user_id=request.args.get('user_id', '')))
+    else:
+        return render_template('deleteDisc.html',
+                               disc=disc_to_delete)
+
+
 @app.route('/discs/<disc_type>')
 def show_discs(disc_type):
     '''Show a list of all discs of a certain type. So far only five types of

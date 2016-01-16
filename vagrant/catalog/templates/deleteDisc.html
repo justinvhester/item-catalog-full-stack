@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>Are you sure you want to delete {{ disc.name }}?</h3>
+
+<form action='{{ url_for('delete_disc', disc_id=disc.id, user_id=disc.user.id) }}' method='POST'>
+    <input type='submit' name='DELETE'>
+</form>
+
+{% endblock %}
