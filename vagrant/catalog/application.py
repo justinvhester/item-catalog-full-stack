@@ -214,13 +214,17 @@ def edit_manufacturer(maker_id):
 def delete_manufacturer(maker_id):
     '''Delete manufacturer from website'''
     mnfctr_delete = session.query(Manufacturer).filter_by(id=maker_id).one()
+    list_all_by_maker = session.query(
+        Disc).filter_by(manufacturer_id=maker_id).all()
     if request.method == 'POST':
         session.delete(mnfctr_delete)
         session.commit()
         return redirect(url_for('showUserHome',
                                 user_id=request.args.get('user_id', '')))
     else:
-        return render_template('deleteManufacturer.html', maker=mnfctr_delete)
+        return render_template('deleteManufacturer.html',
+                               maker=mnfctr_delete,
+                               listofDiscs=list_all_by_maker)
 
 
 if __name__ == '__main__':
