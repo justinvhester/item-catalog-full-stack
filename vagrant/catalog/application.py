@@ -27,57 +27,57 @@ DISC_TYPE_NAMES = {"putter": "Putter",
 
 
 @app.route('/')
-def showHome():
-    '''Main page will provide different experience for the user if they
+def show_home():
+    """Main page will provide different experience for the user if they
     are currently logged in or not.
-    '''
+    """
     list_of_makers = session.query(Manufacturer).all()
     return render_template('main.html', makers=list_of_makers)
 
 
 @app.route('/login')
-def showLogin():
-    ''' The login view for users to login with their existing Facebook,
+def show_login():
+    """ The login view for users to login with their existing Facebook,
     GooglePlus or github account.
-    '''
+    """
     return render_template('login.html')
 
 
 @app.route('/user/<user_id>', methods=['GET', 'POST'])
-def showUserHome(user_id):
-    '''Using the unique user id number, display this user's profile to
+def show_user_home(user_id):
+    """Using the unique user id number, display this user's profile to
     anyone that is not logged in, or is not this user. If the current
     user matches this ID, then show them their own user dashboard.
-    '''
-    thisUser = session.query(User).filter_by(id=user_id).one()
-    thisUsersDiscs = session.query(Disc).filter_by(user_id=user_id).all()
-    thisUsersMakers = session.query(
+    """
+    this_user = session.query(User).filter_by(id=user_id).one()
+    this_users_discs = session.query(Disc).filter_by(user_id=user_id).all()
+    this_users_makers = session.query(
         Manufacturer).filter_by(user_id=user_id).all()
     return render_template('user.html',
-                           user_info=thisUser,
-                           discs=thisUsersDiscs,
-                           makers=thisUsersMakers)
+                           user_info=this_user,
+                           discs=this_users_discs,
+                           makers=this_users_makers)
 
 
 @app.route('/discs/<user_id>/add', methods=['GET', 'POST'])
-def addDisc(user_id):
-    '''View for adding discs to the database. Intended only for users that
+def add_disc(user_id):
+    """View for adding discs to the database. Intended only for users that
     are currently logged in. If the request method is a POST, we'll add
     a disc to the database according to the information submitted through
-    the form. If the request method is not POST, then the 'addDisc' form
-    will be presented to the user.
-    '''
+    the form. If the request method is not POST, then the 'addDisc.html'
+    template form will be presented to the user.
+    """
     if request.method == 'POST':
-        newDisc = Disc(name=request.form['disc_name_form'],
-                       description=request.form['disc_desc_form'],
-                       weight=request.form['disc_weight_form'],
-                       color=request.form['disc_color_form'],
-                       manufacturer_id=request.form['maker_id_form'],
-                       disc_type=request.form['disc_type_form'],
-                       user_id=user_id)
-        session.add(newDisc)
+        new_disc = Disc(name=request.form['disc_name_form'],
+                        description=request.form['disc_desc_form'],
+                        weight=request.form['disc_weight_form'],
+                        color=request.form['disc_color_form'],
+                        manufacturer_id=request.form['maker_id_form'],
+                        disc_type=request.form['disc_type_form'],
+                        user_id=user_id)
+        session.add(new_disc)
         session.commit()
-        return redirect(url_for('showUserHome', user_id=user_id))
+        return redirect(url_for('show_user_home', user_id=user_id))
     else:
         list_of_makers = session.query(Manufacturer).all()
         return render_template('addDisc.html',
@@ -86,47 +86,48 @@ def addDisc(user_id):
 
 
 @app.route('/disc/<int:disc_id>')
-def showDisc(disc_id):
-    ''' Show details about a unique disc on the site. Because any user can
+def show_disc(disc_id):
+    """ Show details about a unique disc on the site. Because any user can
     submit a description of their unique disc, the unique id from the 'disc'
     table will be used to pull the first record matching the disc_id from
     the URL.
-    '''
-    thisDisc = session.query(Disc).filter_by(id=disc_id).first()
-    if thisDisc:
-        return render_template('disc.html', disc=thisDisc)
+    """
+    this_disc = session.query(Disc).filter_by(id=disc_id).first()
+    if this_disc:
+        return render_template('disc.html', disc=this_disc)
     else:
-        return redirect(url_for('showHome'))
+        return redirect(url_for('show_home'))
 
 
 @app.route('/disc/<int:disc_id>/edit', methods=['GET', 'POST'])
 def edit_disc(disc_id):
-    '''Edit any field of the specified disc'''
-    editDisc = session.query(Disc).filter_by(id=disc_id).one()
+    """Edit any field of the specified disc"""
+    disc = session.query(Disc).filter_by(id=disc_id).one()
+    print type(disc)
     if request.method == 'POST':
         for field in request.form:
             print request.form.get(field, "")
         if request.form['name']:
-            editDisc.name = request.form['name']
+            disc.name = request.form['name']
         if request.form['description']:
-            editDisc.description = request.form['description']
+            disc.description = request.form['description']
         if request.form['disc_type']:
-            editDisc.disc_type = request.form['disc_type']
+            disc.disc_type = request.form['disc_type']
         if request.form['maker_id_form']:
-            editDisc.manufacturer_id = request.form['maker_id_form']
+            disc.manufacturer_id = request.form['maker_id_form']
         if request.form['weight']:
-            editDisc.weight = request.form['weight']
+            disc.weight = request.form['weight']
         if request.form['color']:
-            editDisc.color = request.form['color']
+            disc.color = request.form['color']
         if request.form['condition']:
-            editDisc.condition = request.form['condition']
-        session.add(editDisc)
+            disc.condition = request.form['condition']
+        session.add(disc)
         session.commit()
-        return redirect(url_for('showDisc', disc_id=disc_id))
+        return redirect(url_for('show_disc', disc_id=disc_id))
     else:
         list_of_makers = session.query(Manufacturer).all()
         return render_template('editDisc.html',
-                               disc=editDisc,
+                               disc=disc,
                                disc_id=disc_id,
                                makers=list_of_makers,
                                DISCTYPES=DISCTYPES,
@@ -135,16 +136,16 @@ def edit_disc(disc_id):
 
 @app.route('/disc/<int:disc_id>/delete', methods=['GET', 'POST'])
 def delete_disc(disc_id):
-    '''Delete a unique disc from DISCR
+    """Delete a unique disc from DISCR
 
     Only the user that added the disc (the owner) is allowed to
     delete the disc.
-    '''
+    """
     disc_to_delete = session.query(Disc).filter_by(id=disc_id).one()
     if request.method == 'POST':
         session.delete(disc_to_delete)
         session.commit()
-        return redirect(url_for('showUserHome',
+        return redirect(url_for('show_user_home',
                                 user_id=request.args.get('user_id', '')))
     else:
         return render_template('deleteDisc.html',
@@ -153,14 +154,13 @@ def delete_disc(disc_id):
 
 @app.route('/discs/<disc_type>')
 def show_discs(disc_type):
-    '''Show a list of all discs of a certain type. So far only five types of
+    """Show a list of all discs of a certain type. So far only five types of
     disc are supported. Those five types are stored in the DISCTYPES global
     variable.
-    '''
+    """
     if disc_type in DISCTYPES:
-        discs_by_type = (session.query(Disc)
-                         .filter_by(disc_type=disc_type)
-                         .all())
+        discs_by_type = session.query(
+            Disc).filter_by(disc_type=disc_type).all()
         return render_template("discsbytype.html",
                                disc_type=disc_type,
                                discs=discs_by_type)
@@ -170,16 +170,17 @@ def show_discs(disc_type):
 
 
 @app.route('/maker/<maker_id>')
-def showMaker(maker_id):
-    makerInfo = session.query(Manufacturer).filter_by(id=maker_id).one()
-    return render_template("maker.html", maker=makerInfo)
+def show_maker(maker_id):
+    """Show basic info about a maker"""
+    maker_info = session.query(Manufacturer).filter_by(id=maker_id).one()
+    return render_template("maker.html", maker=maker_info)
 
 
 @app.route('/maker/<maker>/all')
-def showMakerAll(maker):
-    '''Show Information about this disc manufacturer, and a list of all discs
+def show_maker_all(maker):
+    """Show Information about this disc manufacturer, and a list of all discs
     made by this manufacturer.
-    '''
+    """
     manufacturer = session.query(Manufacturer).filter_by(id=maker).one()
     list_all_by_maker = session.query(
         Disc).filter_by(manufacturer_id=maker).all()
@@ -191,9 +192,9 @@ def showMakerAll(maker):
 @app.route('/user/<user_id>/add/maker', methods=['GET', 'POST'])
 @app.route('/maker/<user_id>/add', methods=['GET', 'POST'])
 def add_maker(user_id):
-    '''Form to add a new disc manufacturer. URL includes user_id for
+    """Form to add a new disc manufacturer. URL includes user_id for
     record keeping purposes.
-    '''
+    """
     if request.method == 'POST':
         new_maker = Manufacturer(
             name=request.form['manufacturer_name_form'],
@@ -203,7 +204,7 @@ def add_maker(user_id):
         session.commit()
         user = session.query(
             User).filter_by(id=user_id).one()
-        return redirect(url_for('addDisc', user_id=user_id))
+        return redirect(url_for('add_disc', user_id=user_id))
     else:
         user = session.query(
             User).filter_by(id=user_id).one()
@@ -212,7 +213,7 @@ def add_maker(user_id):
 
 @app.route('/maker/<int:maker_id>/edit', methods=['GET', 'POST'])
 def edit_manufacturer(maker_id):
-    '''Edit manufacturer information'''
+    """Edit manufacturer information"""
     maker_edit = session.query(
         Manufacturer).filter_by(id=maker_id).one()
     print dir(maker_edit)
@@ -223,21 +224,21 @@ def edit_manufacturer(maker_id):
             maker_edit.country = request.form['country']
         session.add(maker_edit)
         session.commit()
-        return redirect(url_for('showMaker', maker_id=maker_id))
+        return redirect(url_for('show_maker', maker_id=maker_id))
     else:
         return render_template('editManufacturer.html', maker=maker_edit)
 
 
 @app.route('/maker/<int:maker_id>/delete', methods=['GET', 'POST'])
 def delete_manufacturer(maker_id):
-    '''Delete manufacturer from website'''
+    """Delete manufacturer from website"""
     mnfctr_delete = session.query(Manufacturer).filter_by(id=maker_id).one()
     list_all_by_maker = session.query(
         Disc).filter_by(manufacturer_id=maker_id).all()
     if request.method == 'POST':
         session.delete(mnfctr_delete)
         session.commit()
-        return redirect(url_for('showUserHome',
+        return redirect(url_for('show_user_home',
                                 user_id=request.args.get('user_id', '')))
     else:
         return render_template('deleteManufacturer.html',

@@ -3,7 +3,7 @@
   <div>
     <h2 class='center'>Welcome to the main page</h2>
   </div>
-  <div id='login'><a href="{{ url_for('showLogin') }}">Login</a></div>
+  <div id='login'><a href="{{ url_for('show_login') }}">Login</a></div>
   <div id='side-pane'>
       <h4>Categories of Discs</h4>
       <ul>
@@ -17,7 +17,7 @@
       <ul>
           {% for maker in makers %}
           <li>
-          <a href="{{ url_for('showMaker', maker_id=maker.id) }}">{{ maker.name }}</a><br>
+          <a href="{{ url_for('show_maker', maker_id=maker.id) }}">{{ maker.name }}</a><br>
           </li>
           {% endfor %}
       </ul>

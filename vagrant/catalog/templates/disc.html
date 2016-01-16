@@ -22,7 +22,7 @@
 
 <a href="{{ url_for('edit_disc', disc_id=disc.id) }}">EDIT</a><br>
 <a href="{{ url_for('delete_disc', disc_id=disc.id) }}">DELETE</a><br>
-<a href="{{ url_for('showMakerAll', maker=disc.manufacturer.id) }}">SEE ALL DISCS MADE BY {{ disc.manufacturer.name }}</a><br>
+<a href="{{ url_for('show_maker_all', maker=disc.manufacturer.id) }}">SEE ALL DISCS MADE BY {{ disc.manufacturer.name }}</a><br>
 <a href="{{ url_for('show_discs', disc_type=disc.disc_type) }}">SEE ALL DISCS IN THE {{ disc.disc_type }} CATEGORY</a><br>
 
 {% endblock %}
