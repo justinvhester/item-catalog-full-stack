@@ -5,6 +5,13 @@
     <ul>
         Name:
         <li>{{ disc.name }}</li>
+        {% if disc.picture == "FILE NOT UPLOADED" %}
+            Picture:
+            <li>NO IMAGE OF FILE UPLOADED</li>
+        {% elif disc.picture %}
+            Picture:
+            <li><img src="{{ url_for('uploaded_file', filename=disc.picture) }}" height='120' width='120'></li>
+        {% endif %}
         Description:
         <li>{{ disc.description }}</li>
         Weight:

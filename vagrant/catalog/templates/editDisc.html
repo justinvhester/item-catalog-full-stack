@@ -1,10 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 <h1> Edit Disc {{ disc.name }}</h1>
-    <form action="{{ url_for('edit_disc', disc_id=disc_id)}}" method='POST'>
+    <form action="{{ url_for('edit_disc', disc_id=disc_id)}}" method='POST' enctype="multipart/form-data">
       <dl>
       <dt>Name:</dt>
       <dd><input type ='text' size='30' name='name' placeholder = '{{ disc.name }}'></dd>
+      <dt>Image:
+        {% if disc.picture %}
+        <img src="{{ url_for('uploaded_file', filename=disc.picture) }}" height='120' width='120'>
+        {% endif %}
+      </dt>
+      <dd><input type ='file' name='disc_image'></dd>
       <dt>Description:</dt>
       <dd><textarea name = 'description' rows='5' cols='40' placeholder = '{{ disc.description }}'></textarea></dd>
       <dt>Type of Disc:</dt>

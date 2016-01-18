@@ -1,4 +1,7 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for
+from flask import send_from_directory
+from werkzeug import secure_filename
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -9,6 +12,9 @@ app = Flask(__name__)
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+UPLOAD_FOLDER = '/vagrant/catalog/static/images'
+PERMITTED_IMG = set(['PNG', 'png', 'JPG', 'jpg', 'JPEG', 'jpeg'])
 
 
 # Tuple for the statically defined types of disc golf discs we support
@@ -61,19 +67,33 @@ def show_user_home(user_id):
 
 @app.route('/discs/<user_id>/add', methods=['GET', 'POST'])
 def add_disc(user_id):
-    """View for adding discs to the database. Intended only for users that
-    are currently logged in. If the request method is a POST, we'll add
-    a disc to the database according to the information submitted through
-    the form. If the request method is not POST, then the 'addDisc.html'
-    template form will be presented to the user.
+    """View for adding discs to the database.
+
+    Intended only for users that are currently logged in. If the
+    request method is a POST, we'll add a disc to the database according
+    to the information submitted through the form. If the request method
+    is not POST, then the 'addDisc.html' template form will be presented
+    to the user. disc_img variable is the result of disc_image_upload
+    function, being the full directory path and filename of the disc
+    picture stored as a string in the database.
     """
     if request.method == 'POST':
+        if request.files['disc_image_form']:
+            disc_img_file = request.files['disc_image_form']
+            if allowed_file(disc_img_file.filename):
+                disc_img = disc_image_upload(disc_img_file)
+            else:
+                disc_img = "FILE NOT UPLOADED"
+        else:
+            disc_img = "FILE NOT UPLOADED"
         new_disc = Disc(name=request.form['disc_name_form'],
                         description=request.form['disc_desc_form'],
                         weight=request.form['disc_weight_form'],
+                        picture=disc_img,
                         color=request.form['disc_color_form'],
                         manufacturer_id=request.form['maker_id_form'],
                         disc_type=request.form['disc_type_form'],
+                        condition=request.form['disc_cond_form'],
                         user_id=user_id)
         session.add(new_disc)
         session.commit()
@@ -85,6 +105,30 @@ def add_disc(user_id):
                                makers=list_of_makers)
 
 
+def allowed_file(filename):
+    """Return True or False if type of file is permitted
+
+    Check if the filename string contains a '.' and also if the file
+    extension matches a member of the PERMITTED_IMG set.
+    Great example of this pattern found at:
+    http://flask.pocoo.org/docs/0.10/patterns/fileuploads/
+    """
+    return '.' in filename and filename.rsplit('.', 1)[1] in PERMITTED_IMG
+
+
+def disc_image_upload(img_file):
+    """Upload picture of the disc to DISCR"""
+    filename = secure_filename(img_file.filename)
+    img_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    return filename
+
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    """Serve the file stored in the 'UPLOAD_FOLDER' to the browser."""
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+
 @app.route('/disc/<int:disc_id>')
 def show_disc(disc_id):
     """ Show details about a unique disc on the site. Because any user can
@@ -94,7 +138,7 @@ def show_disc(disc_id):
     """
     this_disc = session.query(Disc).filter_by(id=disc_id).first()
     if this_disc:
-        return render_template('disc.html', disc=this_disc)
+        return render_template('disc.html', disc=this_disc, UPLOAD_FOLDER=UPLOAD_FOLDER)
     else:
         return redirect(url_for('show_home'))
 
@@ -109,6 +153,9 @@ def edit_disc(disc_id):
             print request.form.get(field, "")
         if request.form['name']:
             disc.name = request.form['name']
+        if request.files['disc_image']:
+            disc_img = disc_image_upload(request.files['disc_image'])
+            disc.picture = disc_img
         if request.form['description']:
             disc.description = request.form['description']
         if request.form['disc_type']:
@@ -248,4 +295,5 @@ def delete_manufacturer(maker_id):
 
 if __name__ == '__main__':
     app.config.from_pyfile('config.py')
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     app.run(host="0.0.0.0", port=5000)
