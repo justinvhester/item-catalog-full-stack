@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
-from flask import send_from_directory
+from flask import send_from_directory, flash
 from werkzeug import secure_filename
 
 from sqlalchemy import create_engine
@@ -97,6 +97,7 @@ def add_disc(user_id):
                         user_id=user_id)
         session.add(new_disc)
         session.commit()
+        flash("New Disc has been added")
         return redirect(url_for('show_user_home', user_id=user_id))
     else:
         list_of_makers = session.query(Manufacturer).all()
@@ -170,6 +171,7 @@ def edit_disc(disc_id):
             disc.condition = request.form['condition']
         session.add(disc)
         session.commit()
+        flash("Disc has been edited")
         return redirect(url_for('show_disc', disc_id=disc_id))
     else:
         list_of_makers = session.query(Manufacturer).all()
@@ -192,6 +194,7 @@ def delete_disc(disc_id):
     if request.method == 'POST':
         session.delete(disc_to_delete)
         session.commit()
+        flash("Disc has been Deleted")
         return redirect(url_for('show_user_home',
                                 user_id=request.args.get('user_id', '')))
     else:
@@ -251,6 +254,7 @@ def add_maker(user_id):
         session.commit()
         user = session.query(
             User).filter_by(id=user_id).one()
+        flash("New manufacturer has been added")
         return redirect(url_for('add_disc', user_id=user_id))
     else:
         user = session.query(
@@ -271,6 +275,7 @@ def edit_manufacturer(maker_id):
             maker_edit.country = request.form['country']
         session.add(maker_edit)
         session.commit()
+        flash("Manufacturer has been edited")
         return redirect(url_for('show_maker', maker_id=maker_id))
     else:
         return render_template('editManufacturer.html', maker=maker_edit)
@@ -285,6 +290,7 @@ def delete_manufacturer(maker_id):
     if request.method == 'POST':
         session.delete(mnfctr_delete)
         session.commit()
+        flash("Menufacturer has been Deleted")
         return redirect(url_for('show_user_home',
                                 user_id=request.args.get('user_id', '')))
     else:
