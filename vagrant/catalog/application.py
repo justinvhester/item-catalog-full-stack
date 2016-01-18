@@ -302,4 +302,4 @@ def delete_manufacturer(maker_id):
 if __name__ == '__main__':
     app.config.from_pyfile('config.py')
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=8000)
