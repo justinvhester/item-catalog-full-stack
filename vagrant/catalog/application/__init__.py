@@ -8,6 +8,7 @@ from sqlalchemy.orm import sessionmaker
 from database_setup import Manufacturer, Disc, User, engine
 
 app = Flask(__name__)
+import application.api
 
 
 DBSession = sessionmaker(bind=engine)
@@ -15,14 +16,6 @@ session = DBSession()
 
 UPLOAD_FOLDER = '/vagrant/catalog/static/images'
 PERMITTED_IMG = set(['PNG', 'png', 'JPG', 'jpg', 'JPEG', 'jpeg'])
-
-
-# Tuple for the statically defined types of disc golf discs we support
-DISCTYPES = ("putter",
-             "midrange",
-             "fairwaydriver",
-             "longrangedriver",
-             "distancedriver")
 
 
 DISC_TYPE_NAMES = {"putter": "Putter",

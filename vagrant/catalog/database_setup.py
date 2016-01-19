@@ -12,6 +12,16 @@ class User(Base):
     email = Column(String(50), nullable=False)
     picture = Column(String(250))
 
+    @property
+    def serialize(self):
+        """Returns object data in an easy to serialize format"""
+        return {
+                'id' : self.id,
+                'name' : self.name,
+                'email' : self.email,
+                'picture' : self.picture
+                }
+
 
 class Manufacturer(Base):
     __tablename__ = 'manufacturer'
@@ -20,6 +30,16 @@ class Manufacturer(Base):
     country = Column(String(50))
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
+
+    @property
+    def serialize(self):
+        """Returns object data in an easy to serialize format"""
+        return {
+                'id' : self.id,
+                'name' : self.name,
+                'country' : self.country,
+                'user_name' : self.user.name
+                }
 
 
 class Disc(Base):
@@ -37,6 +57,21 @@ class Disc(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
+    @property
+    def serialize(self):
+        """Returns object data in an easy to serialize format"""
+        return {
+                'id' : self.id,
+                'name' : self.name,
+                'disc_type': self.disc_type,
+                'description': self.description,
+                'weight': self.weight,
+                'color': self.color,
+                'picture': self.picture,
+                'condition': self.condition,
+                'manufacturer': self.manufacturer.name,
+                'user': self.user.name
+                }
 
 engine = create_engine('sqlite:///discr.db')
 Base.metadata.create_all(engine)
