@@ -7,6 +7,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Manufacturer, Disc, User, engine
 
+from application.config import DISCTYPES
+
 app = Flask(__name__)
 import application.api
 
