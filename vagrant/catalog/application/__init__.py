@@ -283,8 +283,3 @@ def delete_manufacturer(maker_id):
         return render_template('deleteManufacturer.html',
                                maker=mnfctr_delete,
                                listofDiscs=list_all_by_maker)
-
-
-if __name__ == '__main__':
-    app.config.from_pyfile('config.py')
-    app.run(host="0.0.0.0", port=8000)
