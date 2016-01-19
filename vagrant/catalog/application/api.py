@@ -1,6 +1,6 @@
 """APIs for Discr providing JSON formatted data of Disc collections."""
 from application import app
-from application.config import DISCTYPES
+from application.constants import DISCTYPES
 from flask import jsonify
 from database_setup import Disc, engine
 from sqlalchemy.orm import sessionmaker

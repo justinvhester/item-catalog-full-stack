@@ -7,7 +7,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Manufacturer, Disc, User, engine
 
-from application.config import DISCTYPES
+from application.constants import DISCTYPES, DISC_TYPE_NAMES
+from application.constants import UPLOAD_FOLDER, PERMITTED_IMG
 
 app = Flask(__name__)
 import application.api
@@ -15,16 +16,6 @@ import application.api
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
-
-UPLOAD_FOLDER = '/vagrant/catalog/static/images'
-PERMITTED_IMG = set(['PNG', 'png', 'JPG', 'jpg', 'JPEG', 'jpeg'])
-
-
-DISC_TYPE_NAMES = {"putter": "Putter",
-                   "midrange": "Mid-Range",
-                   "fairwaydriver": "Fairway Driver",
-                   "longrangedriver": "Long-Range Driver",
-                   "distancedriver": "Distance Driver"}
 
 
 @app.route('/')
@@ -115,14 +106,14 @@ def allowed_file(filename):
 def disc_image_upload(img_file):
     """Upload picture of the disc to DISCR"""
     filename = secure_filename(img_file.filename)
-    img_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    img_file.save(os.path.join(UPLOAD_FOLDER, filename))
     return filename
 
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     """Serve the file stored in the 'UPLOAD_FOLDER' to the browser."""
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    return send_from_directory(UPLOAD_FOLDER, filename)
 
 
 @app.route('/disc/<int:disc_id>')
