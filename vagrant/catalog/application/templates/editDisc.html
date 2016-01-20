@@ -5,11 +5,13 @@
       <dl>
       <dt>Name:</dt>
       <dd><input type ='text' size='30' name='name' placeholder = '{{ disc.name }}'></dd>
-      <dt>Image:
-        {% if disc.picture %}
+        {% if disc.picture == "FILE NOT UPLOADED" %}
+        <dt>Image: NO IMAGE OF FILE UPLOADED</dt>
+        {% elif disc.picture %}
+        <dt>Image:
         <img src="{{ url_for('uploaded_file', filename=disc.picture) }}" height='120' width='120'>
+        </dt>
         {% endif %}
-      </dt>
       <dd><input type ='file' name='disc_image'></dd>
       <dt>Description:</dt>
       <dd><textarea name = 'description' rows='5' cols='40' placeholder = '{{ disc.description }}'></textarea></dd>
