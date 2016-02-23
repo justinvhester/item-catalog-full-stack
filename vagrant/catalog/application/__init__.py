@@ -1,11 +1,25 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
 from flask import send_from_directory, flash
+from flask import session as login_session
+import random
+import string
 from werkzeug import secure_filename
-
+# Database, sqlalchemy and ORM imports
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Manufacturer, Disc, User, engine
+# Imports for login with oauth2 and google plus
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import FlowExchangeError
+import httplib2
+import json
+from flask import make_response
+import requests
+
+
+with open('client_secrets.json', 'r') as secrets:
+    CLIENT_ID = json.load(secrets).get('web').get('client_id')
 
 from application.constants import DISCTYPES, DISC_TYPE_NAMES
 from application.constants import UPLOAD_FOLDER, PERMITTED_IMG
@@ -16,6 +30,26 @@ import application.api
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+
+# My own little time saver
+def makeJSONResponse(message, response_code):
+    response = make_response(json.dumps(message), response_code)
+    response.headers['Content-Type'] = 'application/json'
+    return response
+
+
+@app.route('/sess')
+def clean_sess_info():
+    """Quick and dirty func see what's going on."""
+    output = ''
+    for i in login_session:
+        output += '<br>'
+        output += i
+        output += '<br>'
+        output += login_session[i]
+        output += '<br>'
+    return output
 
 
 @app.route('/')
@@ -29,10 +63,99 @@ def show_home():
 
 @app.route('/login')
 def show_login():
-    """ The login view for users to login with their existing Facebook,
-    GooglePlus or github account.
+    """The login view for users to login with their existing Facebook or
+    GooglePlus account.
     """
-    return render_template('login.html')
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for x in xrange(32))
+    login_session['state'] = state
+    print "The current session state is %s" % login_session['state']
+    return render_template('login.html', STATE=state)
+
+
+@app.route('/gconnect', methods=['POST'])
+def gconnect():
+    """Sign into DISCR with Google Plus credentials."""
+    if request.args.get('state') != login_session['state']:
+        # print("Request.args.get('state') is %s but login_session['state'] is %s.") % (request.args.get('state'), login_session['state'])
+        return makeJSONResponse('Invalid state parameter', 401)
+    code = request.data
+    print('The code is %s' % code)
+    try:
+        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow.redirect_uri = 'postmessage'
+        credentials = oauth_flow.step2_exchange(code)
+    except FlowExchangeError:
+        return makeJSONResponse("Failed to upgrade the authorization code.",
+                                401)
+
+    access_token = credentials.access_token
+    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
+    h = httplib2.Http()
+    result = json.loads(h.request(url, 'GET')[1])
+    # If my result contains any errors then I send a 500 internal server
+    # error to my client
+    if result.get('error') is not None:
+        # print("RESULT ERROR IS NOT NONE!")
+        response = make_response(json.dumps(result.get('error')), 500)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    gplus_id = credentials.id_token['sub']
+    # Verify the gplus_id matches
+    if result['user_id'] != gplus_id:
+        return makeJSONResponse("Token's user ID doesn't match given user ID.",
+                                401)
+
+    # Verify the CLIENT_ID matches
+    if result['issued_to'] != CLIENT_ID:
+        return makeJSONResponse("Token CLIENT ID is not the app's client id.",
+                                401)
+
+    stored_credentials = login_session.get('credentials')
+    stored_gplus_id = login_session.get('gplus_id')
+    if stored_credentials is not None and gplus_id == stored_gplus_id:
+        return makeJSONResponse("Current user is already connected.", 200)
+
+    login_session['provider'] = 'google'
+    login_session['credentials'] = credentials
+    login_session['gplus_id'] = gplus_id
+
+    userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
+    params = {'access_token': credentials.access_token, 'alt': 'json'}
+    answer = requests.get(userinfo_url, params=params)
+    data = answer.json()
+
+    login_session['username'] = data['name']
+    login_session['picture'] = data['picture']
+
+    return makeJSONResponse("Welcome to DISCR", 200)
+
+
+@app.route("/gdisconnect")
+def gdisconnect():
+    """Grab the credentials form the login_session object"""
+    print(login_session.get('credentials'))
+    credentials = login_session.get('credentials')
+    if credentials is None:
+        response = makeJSONResponse('Current user not connected.', 401)
+        return response
+
+    access_token = credentials.access_token
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[0]
+
+    if result['status'] == 200:
+        del login_session['credentials']
+        del login_session['gplus_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+
+        return makeJSONResponse('Successfully disconnected', 200)
+    else:
+        return makeJSONResponse('Failed to revoke token for given user', 400)
 
 
 @app.route('/user/<user_id>', methods=['GET', 'POST'])

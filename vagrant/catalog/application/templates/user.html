@@ -2,7 +2,7 @@
 {% block content %}
 
 <h2>Welcome {{ user_info.name }}!</h2>
-
+<div><a href="{{ url_for('gdisconnect') }}">LOGOUT</a></div>
 <h4>My disc collection</h4>
 {% for disc in discs %}
 <div><a href="{{ url_for('show_disc', disc_id=disc.id) }}">{{ disc.name }}</a></div>
