@@ -40,7 +40,7 @@ def makeJSONResponse(message, response_code):
 
 
 @app.route('/sess')
-def clean_sess_info():
+def show_sess_info():
     """Quick and dirty func see what's going on."""
     output = ''
     for i in login_session:
@@ -50,6 +50,12 @@ def clean_sess_info():
         output += login_session[i]
         output += '<br>'
     return output
+
+
+@app.route('/clear')
+def clear_session():
+    login_session.clear()
+    return redirect(url_for('show_sess_info'))
 
 
 @app.route('/')
@@ -118,7 +124,7 @@ def gconnect():
         return makeJSONResponse("Current user is already connected.", 200)
 
     login_session['provider'] = 'google'
-    login_session['credentials'] = credentials
+    login_session['credentials'] = access_token
     login_session['gplus_id'] = gplus_id
 
     userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
@@ -135,23 +141,29 @@ def gconnect():
 @app.route("/gdisconnect")
 def gdisconnect():
     """Grab the credentials form the login_session object"""
-    print(login_session.get('credentials'))
+    # print(dir(login_session))
     credentials = login_session.get('credentials')
     if credentials is None:
         response = makeJSONResponse('Current user not connected.', 401)
         return response
 
-    access_token = credentials.access_token
+    access_token = login_session['credentials']
+    print(access_token)
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
-    h = httplib2.Http()
-    result = h.request(url, 'GET')[0]
+    print(url)
+    # h = httplib2.Http()
+    # result = h.request(url, 'GET')[0]
+    response = requests.get(url)
+    print(response.content)
+    print(response.reason)
 
-    if result['status'] == 200:
+    if response.status_code == 200:
         del login_session['credentials']
         del login_session['gplus_id']
         del login_session['username']
-        del login_session['email']
+        # del login_session['email']
         del login_session['picture']
+        del login_session['provider']
 
         return makeJSONResponse('Successfully disconnected', 200)
     else:
@@ -164,14 +176,17 @@ def show_user_home(user_id):
     anyone that is not logged in, or is not this user. If the current
     user matches this ID, then show them their own user dashboard.
     """
-    this_user = session.query(User).filter_by(id=user_id).one()
-    this_users_discs = session.query(Disc).filter_by(user_id=user_id).all()
-    this_users_makers = session.query(
-        Manufacturer).filter_by(user_id=user_id).all()
-    return render_template('user.html',
-                           user_info=this_user,
-                           discs=this_users_discs,
-                           makers=this_users_makers)
+    if 'username' not in login_session:
+        return redirect('/login')
+    else:
+        this_user = session.query(User).filter_by(id=user_id).one()
+        this_users_discs = session.query(Disc).filter_by(user_id=user_id).all()
+        this_users_makers = session.query(
+            Manufacturer).filter_by(user_id=user_id).all()
+        return render_template('user.html',
+                               user_info=this_user,
+                               discs=this_users_discs,
+                               makers=this_users_makers)
 
 
 @app.route('/discs/<user_id>/add', methods=['GET', 'POST'])
