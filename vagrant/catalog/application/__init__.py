@@ -42,7 +42,7 @@ def makeJSONResponse(message, response_code):
 @app.route('/sess')
 def show_sess_info():
     """Quick and dirty func see what's going on."""
-    output = ''
+    output = 'Session info'
     for i in login_session:
         output += '<br>'
         output += i
@@ -83,14 +83,11 @@ def show_login():
 def gconnect():
     """Sign into DISCR with Google Plus credentials."""
     if request.args.get('state') != login_session['state']:
-        # print("Request.args.get('state') is %s but login_session['state'] is %s.") % (request.args.get('state'), login_session['state'])
         return makeJSONResponse('Invalid state parameter', 401)
-    code = request.data
-    print('The code is %s' % code)
     try:
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
-        credentials = oauth_flow.step2_exchange(code)
+        credentials = oauth_flow.step2_exchange(request.data)
     except FlowExchangeError:
         return makeJSONResponse("Failed to upgrade the authorization code.",
                                 401)
@@ -102,10 +99,7 @@ def gconnect():
     # If my result contains any errors then I send a 500 internal server
     # error to my client
     if result.get('error') is not None:
-        # print("RESULT ERROR IS NOT NONE!")
-        response = make_response(json.dumps(result.get('error')), 500)
-        response.headers['Content-Type'] = 'application/json'
-        return response
+        return makeJSONResponse(json.dumps(result.get('error')), 500)
 
     gplus_id = credentials.id_token['sub']
     # Verify the gplus_id matches
@@ -134,34 +128,28 @@ def gconnect():
 
     login_session['username'] = data['name']
     login_session['picture'] = data['picture']
+    login_session['email'] = data['email']
 
     return makeJSONResponse("Welcome to DISCR", 200)
 
 
 @app.route("/gdisconnect")
 def gdisconnect():
-    """Grab the credentials form the login_session object"""
-    # print(dir(login_session))
+    """Revoke the gplus token, thus disconnecting the user"""
     credentials = login_session.get('credentials')
     if credentials is None:
-        response = makeJSONResponse('Current user not connected.', 401)
-        return response
+        return makeJSONResponse('Current user not connected.', 401)
 
     access_token = login_session['credentials']
-    print(access_token)
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
-    print(url)
-    # h = httplib2.Http()
-    # result = h.request(url, 'GET')[0]
     response = requests.get(url)
-    print(response.content)
-    print(response.reason)
 
     if response.status_code == 200:
+        del login_session['state']
         del login_session['credentials']
         del login_session['gplus_id']
         del login_session['username']
-        # del login_session['email']
+        del login_session['email']
         del login_session['picture']
         del login_session['provider']
 
