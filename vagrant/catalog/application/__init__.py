@@ -47,7 +47,7 @@ def show_sess_info():
         output += '<br>'
         output += i
         output += '<br>'
-        output += login_session[i]
+        output += str(login_session.get(i))
         output += '<br>'
     return output
 
@@ -130,6 +130,11 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
+    user_id = get_user_id(login_session.get('email'))
+    if not user_id:
+        user_id = create_user(login_session)
+    login_session['user_id'] = user_id
+
     return makeJSONResponse("Welcome to DISCR", 200)
 
 
@@ -146,6 +151,7 @@ def gdisconnect():
 
     if response.status_code == 200:
         del login_session['state']
+        del login_session['user_id']
         del login_session['credentials']
         del login_session['gplus_id']
         del login_session['username']
@@ -409,3 +415,26 @@ def delete_manufacturer(maker_id):
         return render_template('deleteManufacturer.html',
                                maker=mnfctr_delete,
                                listofDiscs=list_all_by_maker)
+
+
+def create_user(login_session):
+    new_user = User(name=login_session['username'],
+                    email=login_session['email'],
+                    picture=login_session['picture'])
+    session.add(new_user)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
+
+
+def get_user_info(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+
+def get_user_id(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
