@@ -195,7 +195,10 @@ def add_disc(user_id):
     function, being the full directory path and filename of the disc
     picture stored as a string in the database.
     """
-    if request.method == 'POST':
+    if 'user_id' not in login_session:
+        flash("Please login to add a new disc to your collection")
+        return redirect('/login')
+    elif request.method == 'POST':
         if request.files['disc_image_form']:
             disc_img_file = request.files['disc_image_form']
             if allowed_file(disc_img_file.filename):
@@ -256,17 +259,28 @@ def show_disc(disc_id):
     the URL.
     """
     this_disc = session.query(Disc).filter_by(id=disc_id).first()
-    if this_disc:
-        return render_template('disc.html', disc=this_disc, UPLOAD_FOLDER=UPLOAD_FOLDER)
+    if this_disc and this_disc.user_id == login_session.get('user_id'):
+        return render_template('disc.html',
+                               disc=this_disc,
+                               UPLOAD_FOLDER=UPLOAD_FOLDER)
+    elif this_disc:
+        return render_template('public_disc.html',
+                               disc=this_disc,
+                               UPLOAD_FOLDER=UPLOAD_FOLDER)
     else:
+        flash("Disc does not exist.")
         return redirect(url_for('show_home'))
 
 
 @app.route('/disc/<int:disc_id>/edit', methods=['GET', 'POST'])
 def edit_disc(disc_id):
     """Edit any field of the specified disc"""
+    if 'username' not in login_session:
+        flash("Please login to edit your own Discs")
+        return redirect('/login')
     disc = session.query(Disc).filter_by(id=disc_id).one()
-    print type(disc)
+    if disc.user_id is not login_session.get('user_id'):
+        return redirect(url_for('show_disc', disc_id=disc_id))
     if request.method == 'POST':
         for field in request.form:
             print request.form.get(field, "")
@@ -308,8 +322,13 @@ def delete_disc(disc_id):
     Only the user that added the disc (the owner) is allowed to
     delete the disc.
     """
+    if 'username' not in login_session:
+        flash("Please login to delete your own Discs")
+        return redirect('/login')
     disc_to_delete = session.query(Disc).filter_by(id=disc_id).one()
-    if request.method == 'POST':
+    if disc_to_delete.user_id is not login_session.get('user_id'):
+        return redirect(url_for('show_disc', disc_id=disc_id))
+    elif request.method == 'POST':
         session.delete(disc_to_delete)
         session.commit()
         flash("Disc has been Deleted")

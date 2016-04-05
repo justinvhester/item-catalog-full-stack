@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="top">
+    <ul>
+        Name:
+        <li>{{ disc.name }}</li>
+        {% if disc.picture == "FILE NOT UPLOADED" %}
+            Picture:
+            <li>NO IMAGE OF FILE UPLOADED</li>
+        {% elif disc.picture %}
+            Picture:
+            <li><img src="{{ url_for('uploaded_file', filename=disc.picture) }}" height='120' width='120'></li>
+        {% endif %}
+        Description:
+        <li>{{ disc.description }}</li>
+        Weight:
+        <li>{{ disc.weight }}</li>
+        Color:
+        <li>{{ disc.color }}</li>
+        Condition:
+        <li>{{ disc.condition }}</li>
+        Manufactured by:
+        <li>{{ disc.manufacturer.name }}</li>
+        Added by:
+        <li>{{ disc.user.name }}</li>
+    </ul>
+</div>
+
+<a href="{{ url_for('show_maker_all', maker=disc.manufacturer.id) }}">SEE ALL DISCS MADE BY {{ disc.manufacturer.name }}</a><br>
+<a href="{{ url_for('show_discs', disc_type=disc.disc_type) }}">SEE ALL DISCS IN THE {{ disc.disc_type }} CATEGORY</a><br>
+
+{% endblock %}
