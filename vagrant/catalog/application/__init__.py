@@ -159,31 +159,35 @@ def gdisconnect():
         del login_session['picture']
         del login_session['provider']
 
-        return makeJSONResponse('Successfully disconnected', 200)
+        flash("Successfully logged out")
+        return redirect('/')
     else:
         return makeJSONResponse('Failed to revoke token for given user', 400)
 
 
-@app.route('/user/<user_id>', methods=['GET', 'POST'])
+@app.route('/user/<int:user_id>', methods=['GET', 'POST'])
 def show_user_home(user_id):
     """Using the unique user id number, display this user's profile to
     anyone that is not logged in, or is not this user. If the current
     user matches this ID, then show them their own user dashboard.
     """
-    if 'username' not in login_session:
-        return redirect('/login')
-    else:
-        this_user = session.query(User).filter_by(id=user_id).one()
-        this_users_discs = session.query(Disc).filter_by(user_id=user_id).all()
-        this_users_makers = session.query(
-            Manufacturer).filter_by(user_id=user_id).all()
+    this_user = session.query(User).filter_by(id=user_id).one()
+    this_users_discs = session.query(Disc).filter_by(user_id=user_id).all()
+    this_users_makers = session.query(
+        Manufacturer).filter_by(user_id=user_id).all()
+    if user_id == login_session.get('user_id'):
         return render_template('user.html',
+                               user_info=this_user,
+                               discs=this_users_discs,
+                               makers=this_users_makers)
+    else:
+        return render_template('public_user.html',
                                user_info=this_user,
                                discs=this_users_discs,
                                makers=this_users_makers)
 
 
-@app.route('/discs/<user_id>/add', methods=['GET', 'POST'])
+@app.route('/discs/<int:user_id>/add', methods=['GET', 'POST'])
 def add_disc(user_id):
     """View for adding discs to the database.
 
@@ -198,7 +202,10 @@ def add_disc(user_id):
     if 'user_id' not in login_session:
         flash("Please login to add a new disc to your collection")
         return redirect('/login')
-    elif request.method == 'POST':
+    elif login_session.get('user_id') != user_id:
+        flash("Please add a disc from your own user page.")
+        return redirect(url_for('show_user_home', user_id=user_id))
+    elif request.method == 'POST' and login_session.get('user_id') is user_id:
         if request.files['disc_image_form']:
             disc_img_file = request.files['disc_image_form']
             if allowed_file(disc_img_file.filename):
@@ -259,13 +266,16 @@ def show_disc(disc_id):
     the URL.
     """
     this_disc = session.query(Disc).filter_by(id=disc_id).first()
+    disc_owner = get_user_info(this_disc.user_id)
     if this_disc and this_disc.user_id == login_session.get('user_id'):
         return render_template('disc.html',
                                disc=this_disc,
+                               disc_owner=disc_owner,
                                UPLOAD_FOLDER=UPLOAD_FOLDER)
     elif this_disc:
         return render_template('public_disc.html',
                                disc=this_disc,
+                               disc_owner=disc_owner,
                                UPLOAD_FOLDER=UPLOAD_FOLDER)
     else:
         flash("Disc does not exist.")
