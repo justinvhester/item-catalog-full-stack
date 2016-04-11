@@ -124,3 +124,27 @@ def show_maker_all(maker):
         return render_template("makerAll.html",
                                listofAllByMaker=list_all_by_maker,
                                maker=manufacturer)
+
+
+@app.route('/test')
+def test_page():
+    return "the test index"
+
+
+@app.route('/sess')
+def show_sess_info():
+    """Quick and dirty func see what's going on."""
+    output = 'Session info'
+    for i in login_session:
+        output += '<br>'
+        output += i
+        output += '<br>'
+        output += str(login_session.get(i))
+        output += '<br>'
+    return output
+
+
+@app.route('/clear')
+def clear_session():
+    login_session.clear()
+    return redirect(url_for('show_sess_info'))

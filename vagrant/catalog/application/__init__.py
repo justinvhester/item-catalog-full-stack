@@ -39,25 +39,6 @@ def makeJSONResponse(message, response_code):
     return response
 
 
-@app.route('/sess')
-def show_sess_info():
-    """Quick and dirty func see what's going on."""
-    output = 'Session info'
-    for i in login_session:
-        output += '<br>'
-        output += i
-        output += '<br>'
-        output += str(login_session.get(i))
-        output += '<br>'
-    return output
-
-
-@app.route('/clear')
-def clear_session():
-    login_session.clear()
-    return redirect(url_for('show_sess_info'))
-
-
 @app.route('/login')
 def show_login():
     """The login view for users to login with their existing Facebook or
