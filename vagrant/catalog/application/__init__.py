@@ -165,28 +165,6 @@ def gdisconnect():
         return makeJSONResponse('Failed to revoke token for given user', 400)
 
 
-@app.route('/user/<int:user_id>', methods=['GET', 'POST'])
-def show_user_home(user_id):
-    """Using the unique user id number, display this user's profile to
-    anyone that is not logged in, or is not this user. If the current
-    user matches this ID, then show them their own user dashboard.
-    """
-    this_user = session.query(User).filter_by(id=user_id).one()
-    this_users_discs = session.query(Disc).filter_by(user_id=user_id).all()
-    this_users_makers = session.query(
-        Manufacturer).filter_by(user_id=user_id).all()
-    if user_id == login_session.get('user_id'):
-        return render_template('user.html',
-                               user_info=this_user,
-                               discs=this_users_discs,
-                               makers=this_users_makers)
-    else:
-        return render_template('public_user.html',
-                               user_info=this_user,
-                               discs=this_users_discs,
-                               makers=this_users_makers)
-
-
 @app.route('/discs/<int:user_id>/add', methods=['GET', 'POST'])
 def add_disc(user_id):
     """View for adding discs to the database.
@@ -467,3 +445,5 @@ def get_user_id(email):
         return user.id
     except:
         return None
+
+import application.views
