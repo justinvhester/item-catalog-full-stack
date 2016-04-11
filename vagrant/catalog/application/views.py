@@ -106,3 +106,21 @@ def show_discs(disc_type):
     else:
         return ("%s is not a type of disc. Choose"
                 "from this list %s" % (disc_type, DISCTYPES))
+
+
+@app.route('/maker/<int:maker>')
+def show_maker_all(maker):
+    """Show Information about this disc manufacturer, and a list of all discs
+    made by this manufacturer.
+    """
+    try:
+        manufacturer = session.query(Manufacturer).filter_by(id=maker).one()
+    except NoResultFound:
+        flash("Manufacturer does not exist.")
+        return redirect(url_for('show_home'))
+    else:
+        list_all_by_maker = session.query(
+            Disc).filter_by(manufacturer_id=maker).all()
+        return render_template("makerAll.html",
+                               listofAllByMaker=list_all_by_maker,
+                               maker=manufacturer)

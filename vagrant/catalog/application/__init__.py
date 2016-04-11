@@ -294,26 +294,6 @@ def delete_disc(disc_id):
                                disc=disc_to_delete)
 
 
-@app.route('/maker/<maker_id>')
-def show_maker(maker_id):
-    """Show basic info about a maker"""
-    maker_info = session.query(Manufacturer).filter_by(id=maker_id).one()
-    return render_template("maker.html", maker=maker_info)
-
-
-@app.route('/maker/<maker>/all')
-def show_maker_all(maker):
-    """Show Information about this disc manufacturer, and a list of all discs
-    made by this manufacturer.
-    """
-    manufacturer = session.query(Manufacturer).filter_by(id=maker).one()
-    list_all_by_maker = session.query(
-        Disc).filter_by(manufacturer_id=maker).all()
-    return render_template("makerAll.html",
-                           listofAllByMaker=list_all_by_maker,
-                           maker=manufacturer)
-
-
 @app.route('/user/<user_id>/add/maker', methods=['GET', 'POST'])
 @app.route('/maker/<user_id>/add', methods=['GET', 'POST'])
 def add_maker(user_id):

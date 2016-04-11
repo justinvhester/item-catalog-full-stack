@@ -17,7 +17,7 @@
       <ul>
           {% for maker in makers %}
           <li>
-          <a href="{{ url_for('show_maker', maker_id=maker.id) }}">{{ maker.name }}</a><br>
+          <a href="{{ url_for('show_maker_all', maker=maker.id) }}">{{ maker.name }}</a><br>
           </li>
           {% endfor %}
       </ul>

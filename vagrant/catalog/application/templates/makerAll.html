@@ -3,9 +3,9 @@
 
 {% include "maker.html" %}
 
-All {{ maker.name }} discs currently listed on this site.<br>
+All {{ maker.name }} discs currently listed on this site.<br><br>
 {% for disc in listofAllByMaker %}
-  <a href="{{ url_for('show_disc', disc_id=disc.id) }}">{{ disc.name }}</a>
+  <a href="{{ url_for('show_disc', disc_id=disc.id) }}">{{ disc.name }}</a> - Owner: <a href="{{ url_for('show_user_home', user_id=disc.user_id) }}">{{ disc.user.name }}</a>
   <br>
 {% endfor %}
 
