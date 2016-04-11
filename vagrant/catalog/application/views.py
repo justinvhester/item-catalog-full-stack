@@ -89,3 +89,20 @@ def show_disc(disc_id):
     else:
         flash("Disc does not exist.")
         return redirect(url_for('show_home'))
+
+
+@app.route('/discs/<disc_type>')
+def show_discs(disc_type):
+    """Show a list of all discs of a certain type. So far only five types of
+    disc are supported. Those five types are stored in the DISCTYPES global
+    variable.
+    """
+    if disc_type in DISCTYPES:
+        discs_by_type = session.query(
+            Disc).filter_by(disc_type=disc_type).all()
+        return render_template("discsbytype.html",
+                               disc_type=disc_type,
+                               discs=discs_by_type)
+    else:
+        return ("%s is not a type of disc. Choose"
+                "from this list %s" % (disc_type, DISCTYPES))
