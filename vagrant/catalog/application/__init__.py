@@ -58,15 +58,6 @@ def clear_session():
     return redirect(url_for('show_sess_info'))
 
 
-@app.route('/')
-def show_home():
-    """Main page will provide different experience for the user if they
-    are currently logged in or not.
-    """
-    list_of_makers = session.query(Manufacturer).all()
-    return render_template('main.html', makers=list_of_makers)
-
-
 @app.route('/login')
 def show_login():
     """The login view for users to login with their existing Facebook or
