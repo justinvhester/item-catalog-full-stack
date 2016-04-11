@@ -236,30 +236,6 @@ def uploaded_file(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
 
 
-@app.route('/disc/<int:disc_id>')
-def show_disc(disc_id):
-    """ Show details about a unique disc on the site. Because any user can
-    submit a description of their unique disc, the unique id from the 'disc'
-    table will be used to pull the first record matching the disc_id from
-    the URL.
-    """
-    this_disc = session.query(Disc).filter_by(id=disc_id).first()
-    disc_owner = get_user_info(this_disc.user_id)
-    if this_disc and this_disc.user_id == login_session.get('user_id'):
-        return render_template('disc.html',
-                               disc=this_disc,
-                               disc_owner=disc_owner,
-                               UPLOAD_FOLDER=UPLOAD_FOLDER)
-    elif this_disc:
-        return render_template('public_disc.html',
-                               disc=this_disc,
-                               disc_owner=disc_owner,
-                               UPLOAD_FOLDER=UPLOAD_FOLDER)
-    else:
-        flash("Disc does not exist.")
-        return redirect(url_for('show_home'))
-
-
 @app.route('/disc/<int:disc_id>/edit', methods=['GET', 'POST'])
 def edit_disc(disc_id):
     """Edit any field of the specified disc"""

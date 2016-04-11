@@ -5,8 +5,21 @@ from sqlalchemy.orm.exc import NoResultFound
 from application import app
 from application import session
 from application import login_session
+from application import get_user_info
 
 from database_setup import Manufacturer, Disc, User
+
+from application.constants import DISCTYPES
+from application.constants import UPLOAD_FOLDER
+
+
+@app.route('/')
+def show_home():
+    """Main page will provide different experience for the user if they
+    are currently logged in or not.
+    """
+    list_of_makers = session.query(Manufacturer).all()
+    return render_template('main.html', makers=list_of_makers)
 
 
 @app.route('/user/<int:user_id>', methods=['GET', 'POST'])
@@ -39,3 +52,40 @@ def show_user_home(user_id):
                                user_info=this_user,
                                discs=this_users_discs,
                                makers=this_users_makers)
+
+
+@app.route('/disc/<int:disc_id>')
+def show_disc(disc_id):
+    """ Show details about a unique disc on the site. Because any user can
+    submit a description of their unique disc, the unique id from the 'disc'
+    table will be used to pull the first record matching the disc_id from
+    the URL.
+    """
+    # Try to lookup the disc in the database
+    try:
+        this_disc = session.query(Disc).filter_by(id=disc_id).one()
+    # ... if no result is found set this_disc to None
+    except NoResultFound:
+        this_disc = None
+    # However, if no exceptions are raised then proceed as normal by
+    # getting the disc owner info
+    else:
+        disc_owner = get_user_info(this_disc.user_id)
+    # Verify this disc exists AND the currently logged in user owns the disc.
+    # If so show the disc owner page which includes edit/delete links.
+    if this_disc and this_disc.user_id == login_session.get('user_id'):
+        return render_template('disc.html',
+                               disc=this_disc,
+                               disc_owner=disc_owner,
+                               UPLOAD_FOLDER=UPLOAD_FOLDER)
+    # If the disc exists but the user is not the owner, show the public
+    # disc page which does not include edit/delete.
+    elif this_disc:
+        return render_template('public_disc.html',
+                               disc=this_disc,
+                               disc_owner=disc_owner,
+                               UPLOAD_FOLDER=UPLOAD_FOLDER)
+    # Finally if the disc doesn't exist, route to main with a flash
+    else:
+        flash("Disc does not exist.")
+        return redirect(url_for('show_home'))
