@@ -3,7 +3,6 @@
 
 <h2>Welcome {{ user_info.name }}!</h2>
 <img src="{{ user_info.picture }}" height='120'>
-<div><a href="{{ url_for('gdisconnect') }}">LOGOUT</a></div>
 <h4>My disc collection</h4>
 {% for disc in discs %}
 <div><a href="{{ url_for('show_disc', disc_id=disc.id) }}">{{ disc.name }}</a></div>
@@ -12,8 +11,8 @@
 <p>Click <a href="{{url_for('add_disc', user_id=user_info.id)}}">HERE</a> to add a new disc to your collection.</p>
 
 <h4>Manufacturers added by {{ user_info.name }}</h4>
-{% for maker in makers %}
-<a href="{{ url_for('show_maker', maker_id=maker.id) }}">{{ maker.name }}</a>
+{% for maker in this_makers %}
+<a href="{{ url_for('show_maker_all', maker=maker.id) }}">{{ maker.name }}</a>
 <div class='btn-spc'>
     <a href="{{ url_for('edit_manufacturer', maker_id=maker.id) }}" class='btn lnk'>edit</a>
     <a href="{{ url_for('delete_manufacturer', maker_id=maker.id) }}" class='btn del'>delete</a>

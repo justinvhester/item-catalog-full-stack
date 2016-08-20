@@ -3,6 +3,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script src="https://apis.google.com/js/platform.js?onload=start" async defer></script>
 {% endblock %}
+{% block sidebar %}
+{% endblock sidebar %}
+{% block navbar %}
+<a href="{{ url_for('show_home') }}">HOME</a>
+{% endblock navbar %}
 {% block content %}
 <div id="signInButton">
 <span class="g-signin"
@@ -35,7 +40,7 @@ data-approvalprompt="force">
                     if (result) {
                         $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
                         setTimeout(function() {
-                            window.location.href = "{{ url_for('show_home') }}";
+                            window.location.href = "/";
                         }, 3000);
                         } else if (authResult['error']) {
                         console.log('There was an error: ' + authResult['error']);

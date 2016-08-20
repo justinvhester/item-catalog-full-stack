@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Welcome {{ user_info.name }}!</h2>
-<img src="{{ user_info.picture }}" height='120' width='120'>
+<h2>{{ user_info.name }}</h2>
+<img src="{{ user_info.picture }}" height='120'>
+<div>{{ user_info.email }}</div>
 <h4>disc collection</h4>
 {% for disc in discs %}
 <div><a href="{{ url_for('show_disc', disc_id=disc.id) }}">{{ disc.name }}</a></div>
 {% endfor %}
 
 <h4>Manufacturers added by {{ user_info.name }}</h4>
-{% for maker in makers %}
-<div><a href="{{ url_for('show_maker', maker_id=maker.id) }}">{{ maker.name }}</a></div>
+{% for maker in this_makers %}
+<div><a href="{{ url_for('show_maker_all', maker=maker.id) }}">{{ maker.name }}</a></div>
 {% endfor %}
 
 {% endblock %}

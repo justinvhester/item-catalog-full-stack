@@ -38,6 +38,7 @@ def show_user_home(user_id):
     # However, if no exceptions are raised then proceed as normal by
     # getting the user's disc collection and makers
     else:
+        list_of_makers = session.query(Manufacturer).all()
         this_users_discs = session.query(Disc).filter_by(user_id=user_id).all()
         this_users_makers = session.query(
             Manufacturer).filter_by(user_id=user_id).all()
@@ -46,12 +47,14 @@ def show_user_home(user_id):
         return render_template('user.html',
                                user_info=this_user,
                                discs=this_users_discs,
-                               makers=this_users_makers)
+                               makers=list_of_makers,
+                               this_makers=this_users_makers)
     else:
         return render_template('public_user.html',
                                user_info=this_user,
                                discs=this_users_discs,
-                               makers=this_users_makers)
+                               makers=list_of_makers,
+                               this_makers=this_users_makers)
 
 
 @app.route('/disc/<int:disc_id>')
@@ -73,8 +76,10 @@ def show_disc(disc_id):
         disc_owner = get_user_info(this_disc.user_id)
     # Verify this disc exists AND the currently logged in user owns the disc.
     # If so show the disc owner page which includes edit/delete links.
+    list_of_makers = session.query(Manufacturer).all()
     if this_disc and this_disc.user_id == login_session.get('user_id'):
         return render_template('disc.html',
+                               makers=list_of_makers,
                                disc=this_disc,
                                disc_owner=disc_owner,
                                UPLOAD_FOLDER=UPLOAD_FOLDER)
@@ -82,6 +87,7 @@ def show_disc(disc_id):
     # disc page which does not include edit/delete.
     elif this_disc:
         return render_template('public_disc.html',
+                               makers=list_of_makers,
                                disc=this_disc,
                                disc_owner=disc_owner,
                                UPLOAD_FOLDER=UPLOAD_FOLDER)
@@ -100,7 +106,9 @@ def show_discs(disc_type):
     if disc_type in DISCTYPES:
         discs_by_type = session.query(
             Disc).filter_by(disc_type=disc_type).all()
+        list_of_makers = session.query(Manufacturer).all()
         return render_template("discsbytype.html",
+                               makers=list_of_makers,
                                disc_type=disc_type,
                                discs=discs_by_type)
     else:
@@ -119,9 +127,11 @@ def show_maker_all(maker):
         flash("Manufacturer does not exist.")
         return redirect(url_for('show_home'))
     else:
+        list_of_makers = session.query(Manufacturer).all()
         list_all_by_maker = session.query(
             Disc).filter_by(manufacturer_id=maker).all()
         return render_template("makerAll.html",
+                               makers=list_of_makers,
                                listofAllByMaker=list_all_by_maker,
                                maker=manufacturer)
 

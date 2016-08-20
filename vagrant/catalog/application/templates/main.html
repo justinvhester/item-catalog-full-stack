@@ -1,25 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-  <div>
-    <h2 class='center'>Welcome to the main page</h2>
+  <div class='header'>
+    <h2>Welcome to the main page</h2>
   </div>
-  <div id='login'><a href="{{ url_for('show_login') }}">Login</a></div>
-  <div id='side-pane'>
-      <h4>Categories of Discs</h4>
-      <ul>
-          <li><a href="{{ url_for('show_discs', disc_type='putter') }}">Putter</a></li>
-          <li><a href="{{ url_for('show_discs', disc_type='midrange') }}">Midrange</a></li>
-          <li><a href="{{ url_for('show_discs', disc_type='fairwaydriver') }}">Fairway Driver</a></li>
-          <li><a href="{{ url_for('show_discs', disc_type='longrangedriver') }}">Long-Range Driver</a></li>
-          <li><a href="{{ url_for('show_discs', disc_type='distancedriver') }}">Max-Distance Driver</a></li>
-      </ul>
-      <h4>Manufacturers</h4>
-      <ul>
-          {% for maker in makers %}
-          <li>
-          <a href="{{ url_for('show_maker_all', maker=maker.id) }}">{{ maker.name }}</a><br>
-          </li>
-          {% endfor %}
-      </ul>
+  <div class='content'>
+      <p>This is the Digital Disc Golf bag.</p>
   </div>
 {% endblock %}

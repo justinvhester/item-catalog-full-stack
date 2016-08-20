@@ -1,0 +1,9 @@
+<ul class="navbar">
+  <li><a href="{{ url_for('show_home') }}">Home</a></li>
+ {% if 'username' in session %}
+  <li><a href="{{ url_for('show_home') }}">My Bag</a></li>
+  <li><a href="{{ url_for('disconnect') }}">Log Out</a></li>
+ {% else %}
+  <li><a href="{{ url_for('show_login') }}">Login</a></li>
+ {% endif %}
+</ul>

@@ -1,0 +1,18 @@
+  <div id='side-pane'>
+      <h4>Categories of Discs</h4>
+      <ul>
+          <li><a href="{{ url_for('show_discs', disc_type='putter') }}">Putter</a></li>
+          <li><a href="{{ url_for('show_discs', disc_type='midrange') }}">Midrange</a></li>
+          <li><a href="{{ url_for('show_discs', disc_type='fairwaydriver') }}">Fairway Driver</a></li>
+          <li><a href="{{ url_for('show_discs', disc_type='longrangedriver') }}">Long-Range Driver</a></li>
+          <li><a href="{{ url_for('show_discs', disc_type='distancedriver') }}">Max-Distance Driver</a></li>
+      </ul>
+      <h4>Manufacturers</h4>
+      <ul>
+          {% for maker in makers %}
+          <li>
+          <a href="{{ url_for('show_maker_all', maker=maker.id) }}">{{ maker.name }}</a><br>
+          </li>
+          {% endfor %}
+      </ul>
+  </div>
