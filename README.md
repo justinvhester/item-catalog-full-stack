@@ -17,8 +17,10 @@ A Vagrant file is included in the /vagrant directory for your convenience.
 To spin up a local instance of DISCR follow these steps;
   1) clone this repo
   2) change to the 'item-cat-full-stack/vagrant' directory
-  3) Add your own Facebook and Google+ oauth 2.0 keys to these files
+  3) Add your own Facebook and Google+ oauth 2.0 AppID and keys to these files
      * vagrant/catalog/application/templates/login.html
+     * vagrant/catalog/client_secrets.json
+     * vagrant/catalog/fb_client_secrets.json
   4) $ vagrant init
   5) $ vagrant ssh
   6) $ cd /vagrant/catalog
