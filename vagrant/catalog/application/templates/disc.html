@@ -23,7 +23,7 @@
         Manufactured by:
         <li>{{ disc.manufacturer.name }}</li>
         Added by:
-        <li>{{ disc.user.name }}</li>
+        <li><a href="{{ url_for('show_user_home', user_id=disc.user.id) }}">{{ disc.user.name }}</a></li>
         <li><img src="{{ disc_owner.picture }}" height='60'></li>
     </ul>
 </div>
