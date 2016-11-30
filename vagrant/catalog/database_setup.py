@@ -48,7 +48,7 @@ class Disc(Base):
     name = Column(String(80), nullable=False)
     disc_type = Column(String(16))
     description = Column(String(250))
-    weight = Column(Integer(3))
+    weight = Column(Integer)
     color = Column(String(250))
     picture = Column(String(250))
     condition = Column(String(250))
@@ -73,5 +73,6 @@ class Disc(Base):
                 'user': self.user.name
                 }
 
-engine = create_engine('sqlite:///discr.db')
+# engine = create_engine('sqlite:///discr.db')
+engine = create_engine("postgresql://catalog:2HOEtTedI4n@localhost/catalog")
 Base.metadata.create_all(engine)

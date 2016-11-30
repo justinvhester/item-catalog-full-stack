@@ -18,7 +18,7 @@ from flask import make_response
 import requests
 
 
-with open('client_secrets.json', 'r') as secrets:
+with open('/var/www/discr/vagrant/catalog/client_secrets.json', 'r') as secrets:
     CLIENT_ID = json.load(secrets).get('web').get('client_id')
 
 from application.constants import DISCTYPES, DISC_TYPE_NAMES
@@ -56,8 +56,8 @@ def fbconnect():
     if request.args.get('state') != login_session['state']:
         return makeJSONResponse('Invalid state parameter', 401)
     access_token = request.data
-    app_id = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_id']
-    app_secret = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_secret']
+    app_id = json.loads(open('/var/www/discr/vagrant/catalog/fb_client_secrets.json', 'r').read())['web']['app_id']
+    app_secret = json.loads(open('/var/www/discr/vagrant/catalog/fb_client_secrets.json', 'r').read())['web']['app_secret']
     url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (app_id, app_secret, access_token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
@@ -125,7 +125,7 @@ def gconnect():
     if request.args.get('state') != login_session['state']:
         return makeJSONResponse('Invalid state parameter', 401)
     try:
-        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets('/var/www/discr/vagrant/catalog/client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(request.data)
     except FlowExchangeError:
